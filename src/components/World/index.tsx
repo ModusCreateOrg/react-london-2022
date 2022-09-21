@@ -3,7 +3,7 @@ import "./style.css";
 
 /*
  * Refactor:
- * - useRef instead of getDocumentById
+ * - useRef instead of getElementById
  * - useContext to provide global tile count for rows and columns
  * - create global constants for tile sets and tile size
  * - create util to draw different tiles of a tile set: drawGrass(x, y), drawStone(x, y)
@@ -12,7 +12,7 @@ import "./style.css";
 export default function World() {
   useEffect(() => {
     const canvas = document.getElementById(
-      "canvas"
+      "world-canvas"
     ) as HTMLCanvasElement | null;
     const ctx = canvas?.getContext("2d");
 
@@ -35,9 +35,5 @@ export default function World() {
     }
   }, []);
 
-  return (
-    <div className="World">
-      <canvas id="canvas"></canvas>
-    </div>
-  );
+  return <canvas id="world-canvas"></canvas>;
 }
