@@ -1,3 +1,9 @@
 #player-canvas {
   z-index: 99;
 }
+
+#health-canvas {
+  z-index: 99;
+  top: 8px;
+  left: 8px;
+}
