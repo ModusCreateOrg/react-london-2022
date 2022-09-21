@@ -3,6 +3,7 @@ import World from "./components/World";
 import Player from "./components/Player";
 import CellarDoor from "./components/CellarDoor";
 import House from "./components/House";
+import Fire from "./components/Fire";
 import "./App.css";
 
 /*
@@ -19,6 +20,7 @@ export default function App() {
       <Player openCellarDoor={setIsOpen} />
       <CellarDoor isOpen={isOpen} />
       <House />
+      <Fire left={32} top={82} />
     </div>
   );
 }
