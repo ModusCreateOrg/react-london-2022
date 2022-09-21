@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, FunctionComponent } from "react";
 import "./style.css";
 
 /*
@@ -8,8 +8,11 @@ import "./style.css";
  * - util function for tile set, tiles and animation
  * - create global constants for tile sets and tile size
  * - prefer to return early, flip the if condition
+ * - move object specific interactions outside of Player
  */
-export default function Player() {
+const Player: FunctionComponent<{
+  openCellarDoor: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
+}> = ({ openCellarDoor }) => {
   useEffect(() => {
     const canvas = document.getElementById(
       "player-canvas"
@@ -24,21 +27,23 @@ export default function Player() {
         let currentFrame = 0;
         ctx.drawImage(tileSet, 0, 4, 16, 24, 4, 0, 16, 24);
 
-        window.onkeyup = (event) => {
+        window.onkeyup = () => {
           currentFrame = 0;
           ctx.clearRect(0, 0, 24, 24);
           ctx.drawImage(tileSet, 0, 4, 16, 24, 4, 0, 16, 24);
         };
 
         window.onkeydown = (event) => {
-          if (event.key === "w" || event.key === "ArrowUp") {
-            canvas.style.top = `${parseInt(canvas.style.top || "0") - 1}px`;
+          if (event.key === " " || event.key === "Enter") {
+            openCellarDoor((wasOpen) => !wasOpen);
+          } else if (event.key === "w" || event.key === "ArrowUp") {
+            canvas.style.top = `${parseInt(canvas.style.top || "0") - 2}px`;
           } else if (event.key === "s" || event.key === "ArrowDown") {
-            canvas.style.top = `${parseInt(canvas.style.top || "0") + 1}px`;
+            canvas.style.top = `${parseInt(canvas.style.top || "0") + 2}px`;
           } else if (event.key === "a" || event.key === "ArrowLeft") {
-            canvas.style.left = `${parseInt(canvas.style.left || "0") - 1}px`;
+            canvas.style.left = `${parseInt(canvas.style.left || "0") - 2}px`;
           } else if (event.key === "d" || event.key === "ArrowRight") {
-            canvas.style.left = `${parseInt(canvas.style.left || "0") + 1}px`;
+            canvas.style.left = `${parseInt(canvas.style.left || "0") + 2}px`;
           }
 
           if (!keyPressed) {
@@ -63,7 +68,9 @@ export default function Player() {
         };
       };
     }
-  }, []);
+  }, [openCellarDoor]);
 
   return <canvas id="player-canvas" width="24" height="24"></canvas>;
-}
+};
+
+export default Player;
