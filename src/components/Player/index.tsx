@@ -9,6 +9,7 @@ import "./style.css";
  * - create global constants for tile sets and tile size
  * - prefer to return early, flip the if condition
  * - move object specific interactions outside of Player
+ * - move player controls to global context
  */
 const Player: FunctionComponent<{
   openCellarDoor: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
