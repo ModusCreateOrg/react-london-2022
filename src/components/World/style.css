@@ -1,2 +1,3 @@
-.World {
+#world-canvas {
+  z-index: 1;
 }
