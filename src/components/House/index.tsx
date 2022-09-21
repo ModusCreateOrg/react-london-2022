@@ -7,36 +7,27 @@ import "./style.css";
  * - util function for tile set, tiles and animation
  * - create global constants for tile sets and tile size
  * - prefer to return early, flip the if condition
- * - track state internally
  */
-const CellarDoor: FunctionComponent<{ isOpen?: boolean }> = ({
-  isOpen = false,
-}) => {
+const House: FunctionComponent = () => {
   useEffect(() => {
     const canvas = document.getElementById(
-      "cellar-door-canvas"
+      "house-canvas"
     ) as HTMLCanvasElement | null;
     const ctx = canvas?.getContext("2d");
 
     if (canvas && ctx) {
-      canvas.style.left = "100px";
-      canvas.style.top = "100px";
+      canvas.style.left = "26px";
+      canvas.style.top = "20";
 
       const tileSet = new Image();
       tileSet.src = "assets/overworld.png";
       tileSet.onload = () => {
-        ctx.clearRect(0, 0, 32, 32);
-
-        if (isOpen) {
-          ctx.drawImage(tileSet, 528, 80, 32, 32, 0, 0, 32, 32);
-        } else {
-          ctx.drawImage(tileSet, 496, 80, 32, 32, 0, 0, 32, 32);
-        }
+        ctx.drawImage(tileSet, 99, 0, 74, 80, 0, 0, 74, 80);
       };
     }
-  }, [isOpen]);
+  }, []);
 
-  return <canvas id="cellar-door-canvas" width="32" height="32"></canvas>;
+  return <canvas id="house-canvas" width="74" height="80"></canvas>;
 };
 
-export default CellarDoor;
+export default House;
