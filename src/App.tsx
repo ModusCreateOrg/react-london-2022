@@ -4,6 +4,7 @@ import Player from "./components/Player";
 import Heart from "./components/Heart";
 import Coin from "./components/Coin";
 import CellarDoor from "./components/CellarDoor";
+import Lever from "./components/Lever";
 import House from "./components/House";
 import Fire from "./components/Fire";
 import GameOver from "./components/GameOver";
@@ -15,7 +16,8 @@ import "./App.css";
  * - Use context to connect components
  */
 export default function App() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isCellarDoorOpen, setIsCellarDoorOpen] = useState(false);
+  const [isLeverUsed, setIsLeverUsed] = useState(false);
   const [playerHealth, setPlayerHealth] = useState(4);
 
   return (
@@ -24,10 +26,16 @@ export default function App() {
       <World />
       <Player
         health={playerHealth}
-        openCellarDoor={setIsOpen}
+        onInteract={setIsLeverUsed}
         onCollision={setPlayerHealth}
       />
-      <CellarDoor isOpen={isOpen} />
+      <CellarDoor isOpen={isCellarDoorOpen} />
+      <Lever
+        left={108}
+        top={80}
+        used={isLeverUsed}
+        onInteract={setIsCellarDoorOpen}
+      />
       <House />
       <Fire left={32} top={82} />
       <Heart left={64} top={146} />

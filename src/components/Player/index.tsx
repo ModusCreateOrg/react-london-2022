@@ -15,9 +15,9 @@ import "./style.css";
  */
 const Player: FunctionComponent<{
   health: number;
-  openCellarDoor: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
+  onInteract: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
   onCollision: (health: number | ((prev: number) => number)) => void;
-}> = ({ health, openCellarDoor, onCollision }) => {
+}> = ({ health, onInteract, onCollision }) => {
   useEffect(() => {
     const canvas = document.getElementById(
       "player-canvas"
@@ -112,7 +112,7 @@ const Player: FunctionComponent<{
               }
 
               if (event.key === " " || event.key === "Enter") {
-                openCellarDoor((wasOpen) => !wasOpen);
+                onInteract((wasOpen) => !wasOpen);
               } else if (event.key === "w" || event.key === "ArrowUp") {
                 canvas.style.top = `${parseInt(canvas.style.top || "0") - 2}px`;
               } else if (event.key === "s" || event.key === "ArrowDown") {
@@ -202,7 +202,7 @@ const Player: FunctionComponent<{
         };
       }
     }
-  }, [openCellarDoor, onCollision, health]);
+  }, [onInteract, onCollision, health]);
 
   return (
     <>
