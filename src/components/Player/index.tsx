@@ -31,6 +31,9 @@ const Player: FunctionComponent<{
     const heartCanvas = document.getElementById(
       "heart-canvas"
     ) as HTMLCanvasElement | null;
+    const coinCanvas = document.getElementById(
+      "coin-canvas"
+    ) as HTMLCanvasElement | null;
 
     if (healthCanvas) {
       const ctx = healthCanvas.getContext("2d");
@@ -92,6 +95,20 @@ const Player: FunctionComponent<{
                   onCollision((health) => Math.min(4, health + 1));
                   heartCanvas.remove();
                 }
+              }
+
+              if (
+                coinCanvas &&
+                parseInt(canvas.style.left || "0") + 3 <=
+                  parseInt(coinCanvas.style.left || "0") + 8 &&
+                parseInt(canvas.style.left || "0") + 18 >=
+                  parseInt(coinCanvas.style.left || "0") &&
+                parseInt(canvas.style.top || "0") + 18 <=
+                  parseInt(coinCanvas.style.top || "0") + 16 &&
+                parseInt(canvas.style.top || "0") + 18 >=
+                  parseInt(coinCanvas.style.top || "0") + 8
+              ) {
+                coinCanvas.remove();
               }
 
               if (event.key === " " || event.key === "Enter") {
