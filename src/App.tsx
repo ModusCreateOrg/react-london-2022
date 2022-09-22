@@ -1,6 +1,7 @@
 import { useState } from "react";
 import World from "./components/World";
 import Player from "./components/Player";
+import Npc from "./components/Npc";
 import Heart from "./components/Heart";
 import Coin from "./components/Coin";
 import CellarDoor from "./components/CellarDoor";
@@ -29,6 +30,7 @@ export default function App() {
         onInteract={setIsLeverUsed}
         onCollision={setPlayerHealth}
       />
+      <Npc left={132} top={96} />
       <CellarDoor isOpen={isCellarDoorOpen} />
       <Lever
         left={108}
