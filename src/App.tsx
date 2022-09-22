@@ -2,6 +2,7 @@ import { useState } from "react";
 import World from "./components/World";
 import Player from "./components/Player";
 import Heart from "./components/Heart";
+import Coin from "./components/Coin";
 import CellarDoor from "./components/CellarDoor";
 import House from "./components/House";
 import Fire from "./components/Fire";
@@ -30,6 +31,7 @@ export default function App() {
       <House />
       <Fire left={32} top={82} />
       <Heart left={64} top={146} />
+      <Coin left={80} top={82} />
     </div>
   );
 }
