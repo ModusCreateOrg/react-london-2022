@@ -41,25 +41,25 @@ const Player: FunctionComponent<{
         const tileSet = new Image();
         tileSet.src = "assets/objects.png";
         tileSet.onload = () => {
-          ctx.clearRect(0, 0, 15, 13);
+          ctx.clearRect(0, 0, 30, 26);
           if (health === 4) {
-            ctx.drawImage(tileSet, 64, 2, 15, 13, 0, 0, 15, 13);
+            ctx.drawImage(tileSet, 128, 4, 30, 26, 0, 0, 30, 26);
           } else if (health === 3) {
-            ctx.drawImage(tileSet, 80, 2, 15, 13, 0, 0, 15, 13);
+            ctx.drawImage(tileSet, 160, 4, 30, 26, 0, 0, 30, 26);
           } else if (health === 2) {
-            ctx.drawImage(tileSet, 96, 2, 15, 13, 0, 0, 15, 13);
+            ctx.drawImage(tileSet, 192, 4, 30, 26, 0, 0, 30, 26);
           } else if (health === 1) {
-            ctx.drawImage(tileSet, 112, 2, 15, 13, 0, 0, 15, 13);
+            ctx.drawImage(tileSet, 224, 4, 30, 26, 0, 0, 30, 26);
           } else if (health === 0) {
-            ctx.drawImage(tileSet, 128, 2, 15, 13, 0, 0, 15, 13);
+            ctx.drawImage(tileSet, 256, 4, 30, 26, 0, 0, 30, 26);
           }
         };
       }
     }
 
     if (canvas) {
-      canvas.style.top = canvas.style.top || "64px";
-      canvas.style.left = canvas.style.left || "50px";
+      canvas.style.top = canvas.style.top || "160px";
+      canvas.style.left = canvas.style.left || "102px";
       const ctx = canvas.getContext("2d");
 
       if (ctx) {
@@ -69,13 +69,13 @@ const Player: FunctionComponent<{
           let keyPressed = false;
           let currentFrame = 0;
           let invulnerable = false;
-          ctx.drawImage(tileSet, 0, 4, 16, 24, 4, 0, 16, 24);
+          ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
 
           window.onkeyup = () => {
             currentFrame = 0;
             keyPressed = false;
-            ctx.clearRect(0, 0, 24, 24);
-            ctx.drawImage(tileSet, 0, 4, 16, 24, 4, 0, 16, 24);
+            ctx.clearRect(0, 0, 48, 48);
+            ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
           };
 
           window.onkeydown = (event) => {
@@ -83,14 +83,14 @@ const Player: FunctionComponent<{
               if (health < 4) {
                 if (
                   heartCanvas &&
-                  parseInt(canvas.style.left || "0") + 3 <=
-                    parseInt(heartCanvas.style.left || "0") + 8 &&
-                  parseInt(canvas.style.left || "0") + 18 >=
+                  parseInt(canvas.style.left || "0") + 6 <=
+                    parseInt(heartCanvas.style.left || "0") + 16 &&
+                  parseInt(canvas.style.left || "0") + 36 >=
                     parseInt(heartCanvas.style.left || "0") &&
-                  parseInt(canvas.style.top || "0") + 18 <=
-                    parseInt(heartCanvas.style.top || "0") + 16 &&
-                  parseInt(canvas.style.top || "0") + 18 >=
-                    parseInt(heartCanvas.style.top || "0") + 8
+                  parseInt(canvas.style.top || "0") + 36 <=
+                    parseInt(heartCanvas.style.top || "0") + 32 &&
+                  parseInt(canvas.style.top || "0") + 36 >=
+                    parseInt(heartCanvas.style.top || "0") + 16
                 ) {
                   onCollision((health) => Math.min(4, health + 1));
                   heartCanvas.remove();
@@ -99,14 +99,14 @@ const Player: FunctionComponent<{
 
               if (
                 coinCanvas &&
-                parseInt(canvas.style.left || "0") + 3 <=
-                  parseInt(coinCanvas.style.left || "0") + 8 &&
-                parseInt(canvas.style.left || "0") + 18 >=
+                parseInt(canvas.style.left || "0") + 6 <=
+                  parseInt(coinCanvas.style.left || "0") + 16 &&
+                parseInt(canvas.style.left || "0") + 36 >=
                   parseInt(coinCanvas.style.left || "0") &&
-                parseInt(canvas.style.top || "0") + 18 <=
-                  parseInt(coinCanvas.style.top || "0") + 16 &&
-                parseInt(canvas.style.top || "0") + 18 >=
-                  parseInt(coinCanvas.style.top || "0") + 8
+                parseInt(canvas.style.top || "0") + 36 <=
+                  parseInt(coinCanvas.style.top || "0") + 32 &&
+                parseInt(canvas.style.top || "0") + 36 >=
+                  parseInt(coinCanvas.style.top || "0") + 16
               ) {
                 coinCanvas.remove();
               }
@@ -130,34 +130,34 @@ const Player: FunctionComponent<{
               if (
                 fireCanvas &&
                 !invulnerable &&
-                parseInt(canvas.style.left || "0") + 3 <=
-                  parseInt(fireCanvas.style.left || "0") + 8 &&
-                parseInt(canvas.style.left || "0") + 18 >=
+                parseInt(canvas.style.left || "0") + 6 <=
+                  parseInt(fireCanvas.style.left || "0") + 16 &&
+                parseInt(canvas.style.left || "0") + 36 >=
                   parseInt(fireCanvas.style.left || "0") &&
-                parseInt(canvas.style.top || "0") + 18 <=
-                  parseInt(fireCanvas.style.top || "0") + 16 &&
-                parseInt(canvas.style.top || "0") + 18 >=
-                  parseInt(fireCanvas.style.top || "0") + 8
+                parseInt(canvas.style.top || "0") + 36 <=
+                  parseInt(fireCanvas.style.top || "0") + 32 &&
+                parseInt(canvas.style.top || "0") + 36 >=
+                  parseInt(fireCanvas.style.top || "0") + 16
               ) {
                 if (event.key === "w" || event.key === "ArrowUp") {
                   canvas.style.top = `${Math.min(
                     window.innerHeight,
-                    parseInt(canvas.style.top || "0") + 24
+                    parseInt(canvas.style.top || "0") + 48
                   )}px`;
                 } else if (event.key === "s" || event.key === "ArrowDown") {
                   canvas.style.top = `${Math.max(
                     0,
-                    parseInt(canvas.style.top || "0") - 24
+                    parseInt(canvas.style.top || "0") - 48
                   )}px`;
                 } else if (event.key === "a" || event.key === "ArrowLeft") {
                   canvas.style.left = `${Math.min(
                     window.innerWidth,
-                    parseInt(canvas.style.left || "0") + 24
+                    parseInt(canvas.style.left || "0") + 48
                   )}px`;
                 } else if (event.key === "d" || event.key === "ArrowRight") {
                   canvas.style.left = `${Math.max(
                     0,
-                    parseInt(canvas.style.left || "0") - 24
+                    parseInt(canvas.style.left || "0") - 48
                   )}px`;
                 }
 
@@ -180,16 +180,16 @@ const Player: FunctionComponent<{
 
               if (!keyPressed) {
                 keyPressed = true;
-                ctx.clearRect(0, 0, 24, 24);
+                ctx.clearRect(0, 0, 48, 48);
 
                 if (currentFrame === 0) {
-                  ctx.drawImage(tileSet, 0, 4, 16, 24, 4, 0, 16, 24);
+                  ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
                 } else if (currentFrame === 1) {
-                  ctx.drawImage(tileSet, 16, 4, 16, 24, 4, 0, 16, 24);
+                  ctx.drawImage(tileSet, 32, 8, 32, 48, 8, 0, 32, 48);
                 } else if (currentFrame === 2) {
-                  ctx.drawImage(tileSet, 0, 4, 16, 24, 4, 0, 16, 24);
+                  ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
                 } else if (currentFrame === 3) {
-                  ctx.drawImage(tileSet, 48, 4, 16, 24, 4, 0, 16, 24);
+                  ctx.drawImage(tileSet, 96, 8, 32, 48, 8, 0, 32, 48);
                 }
 
                 setTimeout(() => {
@@ -206,8 +206,8 @@ const Player: FunctionComponent<{
 
   return (
     <>
-      <canvas id="player-canvas" width="24" height="24"></canvas>
-      <canvas id="health-canvas" width="15" height="13"></canvas>
+      <canvas id="player-canvas" width="48" height="48"></canvas>
+      <canvas id="health-canvas" width="30" height="26"></canvas>
     </>
   );
 };

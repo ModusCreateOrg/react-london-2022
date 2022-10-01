@@ -30,18 +30,18 @@ export default function App() {
         onInteract={setIsLeverUsed}
         onCollision={setPlayerHealth}
       />
-      <Npc left={132} top={96} />
+      <Npc left={264} top={192} />
       <CellarDoor isOpen={isCellarDoorOpen} />
       <Lever
-        left={108}
-        top={80}
+        left={216}
+        top={160}
         used={isLeverUsed}
         onInteract={setIsCellarDoorOpen}
       />
       <House />
-      <Fire left={32} top={82} />
-      <Heart left={64} top={146} />
-      <Coin left={80} top={82} />
+      <Fire left={64} top={228} />
+      <Heart left={128} top={292} />
+      <Coin left={224} top={292} />
     </div>
   );
 }

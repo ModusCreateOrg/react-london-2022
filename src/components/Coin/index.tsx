@@ -29,16 +29,16 @@ const Coin: FunctionComponent<{ left: number; top: number }> = ({
         let currentFrame = 0;
 
         setInterval(() => {
-          ctx.clearRect(0, 0, 16, 16);
+          ctx.clearRect(0, 0, 32, 32);
 
           if (currentFrame === 0) {
-            ctx.drawImage(tileSet, 0, 64, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 0, 128, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 1) {
-            ctx.drawImage(tileSet, 16, 64, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 32, 128, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 2) {
-            ctx.drawImage(tileSet, 32, 64, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 64, 128, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 3) {
-            ctx.drawImage(tileSet, 48, 64, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 96, 128, 32, 32, 0, 0, 32, 32);
           }
 
           currentFrame = currentFrame === 3 ? 0 : currentFrame + 1;
@@ -47,7 +47,7 @@ const Coin: FunctionComponent<{ left: number; top: number }> = ({
     }
   }, [left, top]);
 
-  return <canvas id="coin-canvas" width="16" height="16"></canvas>;
+  return <canvas id="coin-canvas" width="32" height="32"></canvas>;
 };
 
 export default Coin;

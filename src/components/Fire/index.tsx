@@ -29,22 +29,22 @@ const Fire: FunctionComponent<{ left: number; top: number }> = ({
         let currentFrame = 0;
 
         setInterval(() => {
-          ctx.clearRect(0, 0, 16, 16);
+          ctx.clearRect(0, 0, 32, 32);
 
           if (currentFrame === 0) {
-            ctx.drawImage(tileSet, 65, 49, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 130, 98, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 1) {
-            ctx.drawImage(tileSet, 81, 49, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 162, 98, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 2) {
-            ctx.drawImage(tileSet, 97, 49, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 194, 98, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 3) {
-            ctx.drawImage(tileSet, 113, 49, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 226, 98, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 4) {
-            ctx.drawImage(tileSet, 129, 49, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 258, 98, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 5) {
-            ctx.drawImage(tileSet, 145, 49, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 290, 98, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 6) {
-            ctx.drawImage(tileSet, 161, 49, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 322, 98, 32, 32, 0, 0, 32, 32);
           }
 
           currentFrame = currentFrame === 6 ? 0 : currentFrame + 1;
@@ -53,7 +53,7 @@ const Fire: FunctionComponent<{ left: number; top: number }> = ({
     }
   }, [left, top]);
 
-  return <canvas id="fire-canvas" width="16" height="16"></canvas>;
+  return <canvas id="fire-canvas" width="32" height="32"></canvas>;
 };
 
 export default Fire;
