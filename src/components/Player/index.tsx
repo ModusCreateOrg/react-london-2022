@@ -67,6 +67,7 @@ const Player: FunctionComponent<{
         tileSet.src = "assets/character.png";
         tileSet.onload = () => {
           let keyPressed = false;
+          let direction = "down";
           let currentFrame = 0;
           let invulnerable = false;
           ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
@@ -75,7 +76,15 @@ const Player: FunctionComponent<{
             currentFrame = 0;
             keyPressed = false;
             ctx.clearRect(0, 0, 48, 48);
-            ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+            if (direction === "up") {
+              ctx.drawImage(tileSet, 0, 136, 32, 48, 8, 0, 32, 48);
+            } else if (direction === "left") {
+              ctx.drawImage(tileSet, 0, 200, 32, 48, 8, 0, 32, 48);
+            } else if (direction === "down") {
+              ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+            } else if (direction === "right") {
+              ctx.drawImage(tileSet, 0, 72, 32, 48, 8, 0, 32, 48);
+            }
           };
 
           window.onkeydown = (event) => {
@@ -114,16 +123,20 @@ const Player: FunctionComponent<{
               if (event.key === " " || event.key === "Enter") {
                 onInteract((wasOpen) => !wasOpen);
               } else if (event.key === "w" || event.key === "ArrowUp") {
-                canvas.style.top = `${parseInt(canvas.style.top || "0") - 2}px`;
+                direction = "up";
+                canvas.style.top = `${parseInt(canvas.style.top || "0") - 4}px`;
               } else if (event.key === "s" || event.key === "ArrowDown") {
-                canvas.style.top = `${parseInt(canvas.style.top || "0") + 2}px`;
+                direction = "down";
+                canvas.style.top = `${parseInt(canvas.style.top || "0") + 4}px`;
               } else if (event.key === "a" || event.key === "ArrowLeft") {
+                direction = "left";
                 canvas.style.left = `${
-                  parseInt(canvas.style.left || "0") - 2
+                  parseInt(canvas.style.left || "0") - 4
                 }px`;
               } else if (event.key === "d" || event.key === "ArrowRight") {
+                direction = "right";
                 canvas.style.left = `${
-                  parseInt(canvas.style.left || "0") + 2
+                  parseInt(canvas.style.left || "0") + 4
                 }px`;
               }
 
@@ -183,13 +196,57 @@ const Player: FunctionComponent<{
                 ctx.clearRect(0, 0, 48, 48);
 
                 if (currentFrame === 0) {
-                  ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+                  if (direction === "up") {
+                    ctx.drawImage(tileSet, 0, 136, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "left") {
+                    ctx.drawImage(tileSet, 0, 200, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "down") {
+                    ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "right") {
+                    ctx.drawImage(tileSet, 0, 72, 32, 48, 8, 0, 32, 48);
+                  }
                 } else if (currentFrame === 1) {
-                  ctx.drawImage(tileSet, 32, 8, 32, 48, 8, 0, 32, 48);
+                  if (direction === "up") {
+                    ctx.drawImage(tileSet, 32, 136, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "left") {
+                    ctx.drawImage(tileSet, 32, 200, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "down") {
+                    ctx.drawImage(tileSet, 32, 8, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "right") {
+                    ctx.drawImage(tileSet, 32, 72, 32, 48, 8, 0, 32, 48);
+                  }
                 } else if (currentFrame === 2) {
-                  ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+                  if (direction === "up") {
+                    ctx.drawImage(tileSet, 0, 136, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "left") {
+                    ctx.drawImage(tileSet, 0, 200, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "down") {
+                    ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "right") {
+                    ctx.drawImage(tileSet, 0, 72, 32, 48, 8, 0, 32, 48);
+                  }
                 } else if (currentFrame === 3) {
-                  ctx.drawImage(tileSet, 96, 8, 32, 48, 8, 0, 32, 48);
+                  if (direction === "up") {
+                    ctx.drawImage(tileSet, 96, 136, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "left") {
+                    ctx.drawImage(tileSet, 96, 200, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "down") {
+                    ctx.drawImage(tileSet, 96, 8, 32, 48, 8, 0, 32, 48);
+                  }
+                  if (direction === "right") {
+                    ctx.drawImage(tileSet, 96, 72, 32, 48, 8, 0, 32, 48);
+                  }
                 }
 
                 setTimeout(() => {
