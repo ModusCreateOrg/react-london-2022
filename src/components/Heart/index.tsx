@@ -29,16 +29,16 @@ const Heart: FunctionComponent<{ left: number; top: number }> = ({
         let currentFrame = 0;
 
         setInterval(() => {
-          ctx.clearRect(0, 0, 16, 16);
+          ctx.clearRect(0, 0, 32, 32);
 
           if (currentFrame === 0) {
-            ctx.drawImage(tileSet, 0, 48, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 0, 96, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 1) {
-            ctx.drawImage(tileSet, 16, 48, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 32, 96, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 2) {
-            ctx.drawImage(tileSet, 32, 48, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 64, 96, 32, 32, 0, 0, 32, 32);
           } else if (currentFrame === 3) {
-            ctx.drawImage(tileSet, 48, 48, 16, 16, 0, 0, 16, 16);
+            ctx.drawImage(tileSet, 96, 96, 32, 32, 0, 0, 32, 32);
           }
 
           currentFrame = currentFrame === 3 ? 0 : currentFrame + 1;
@@ -47,7 +47,7 @@ const Heart: FunctionComponent<{ left: number; top: number }> = ({
     }
   }, [left, top]);
 
-  return <canvas id="heart-canvas" width="16" height="16"></canvas>;
+  return <canvas id="heart-canvas" width="32" height="32"></canvas>;
 };
 
 export default Heart;

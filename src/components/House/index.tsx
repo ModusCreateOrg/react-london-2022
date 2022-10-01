@@ -16,18 +16,18 @@ const House: FunctionComponent = () => {
     const ctx = canvas?.getContext("2d");
 
     if (canvas && ctx) {
-      canvas.style.left = "26px";
-      canvas.style.top = "20";
+      canvas.style.left = "52px";
+      canvas.style.top = "40px";
 
       const tileSet = new Image();
       tileSet.src = "assets/overworld.png";
       tileSet.onload = () => {
-        ctx.drawImage(tileSet, 99, 0, 74, 80, 0, 0, 74, 80);
+        ctx.drawImage(tileSet, 198, 0, 148, 160, 0, 0, 148, 160);
       };
     }
   }, []);
 
-  return <canvas id="house-canvas" width="74" height="80"></canvas>;
+  return <canvas id="house-canvas" width="148" height="160"></canvas>;
 };
 
 export default House;

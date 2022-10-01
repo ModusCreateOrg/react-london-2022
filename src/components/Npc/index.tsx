@@ -28,8 +28,8 @@ const Npc: FunctionComponent<{
       const tileSet = new Image();
       tileSet.src = "assets/npc.png";
       tileSet.onload = () => {
-        ctx.clearRect(0, 0, 16, 16);
-        ctx.drawImage(tileSet, 0, 4, 16, 24, 4, 0, 16, 24);
+        ctx.clearRect(0, 0, 48, 48);
+        ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
       };
 
       window.setInterval(() => {
@@ -47,7 +47,7 @@ const Npc: FunctionComponent<{
     }
   }, [left, top]);
 
-  return <canvas id="npc-canvas" width="24" height="24"></canvas>;
+  return <canvas id="npc-canvas" width="48" height="48"></canvas>;
 };
 
 export default Npc;

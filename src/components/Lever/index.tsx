@@ -28,18 +28,18 @@ const Lever: FunctionComponent<{
       const tileSet = new Image();
       tileSet.src = "assets/objects.png";
       tileSet.onload = () => {
-        ctx.clearRect(0, 0, 16, 16);
+        ctx.clearRect(0, 0, 32, 32);
         onInteract(used);
         if (used) {
-          ctx.drawImage(tileSet, 48, 144, 16, 16, 0, 0, 16, 16);
+          ctx.drawImage(tileSet, 96, 288, 32, 32, 0, 0, 32, 32);
         } else {
-          ctx.drawImage(tileSet, 32, 144, 16, 16, 0, 0, 16, 16);
+          ctx.drawImage(tileSet, 64, 288, 32, 32, 0, 0, 32, 32);
         }
       };
     }
   }, [left, top, used, onInteract]);
 
-  return <canvas id="lever-canvas" width="16" height="16"></canvas>;
+  return <canvas id="lever-canvas" width="32" height="32"></canvas>;
 };
 
 export default Lever;

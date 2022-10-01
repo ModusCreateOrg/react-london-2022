@@ -23,12 +23,12 @@ export default function World() {
       const tileSet = new Image();
       tileSet.src = "assets/overworld.png";
       tileSet.onload = () => {
-        const tileCountHorizontal = Math.ceil(canvas.width / 16);
-        const tileCountVertical = Math.ceil(canvas.height / 16);
+        const tileCountHorizontal = Math.ceil(canvas.width / 32);
+        const tileCountVertical = Math.ceil(canvas.height / 32);
 
         for (let y = 0; y < tileCountVertical; y++) {
           for (let x = 0; x < tileCountHorizontal; x++) {
-            ctx.drawImage(tileSet, 0, 0, 16, 16, x * 16, y * 16, 16, 16);
+            ctx.drawImage(tileSet, 0, 0, 32, 32, x * 32, y * 32, 32, 32);
           }
         }
       };
