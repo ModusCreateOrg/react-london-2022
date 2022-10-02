@@ -64,3 +64,5 @@ This project is part of [Modus Labs](https://labs.moduscreate.com/?utm_source=la
 # Licensing
 
 This project is [MIT licensed](./LICENSE).
+
+[Assets](https://opengameart.org/content/zelda-like-tilesets-and-sprites) created by [ARMM1998](https://opengameart.org/users/armm1998) and licensed under [Creative Commons 0](https://creativecommons.org/publicdomain/zero/1.0/)
