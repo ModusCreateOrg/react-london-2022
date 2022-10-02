@@ -13,6 +13,7 @@ import "./style.css";
  * - use input loop to remove keydown delay
  * - create util function for collisions
  */
+let invulnerable = false;
 const Player: FunctionComponent<{
   health: number;
   onInteract: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
@@ -58,8 +59,8 @@ const Player: FunctionComponent<{
     }
 
     if (canvas) {
-      canvas.style.top = canvas.style.top || "160px";
-      canvas.style.left = canvas.style.left || "102px";
+      canvas.style.top = canvas.style.top || "328px";
+      canvas.style.left = canvas.style.left || "420px";
       const ctx = canvas.getContext("2d");
 
       if (ctx) {
@@ -69,7 +70,6 @@ const Player: FunctionComponent<{
           let keyPressed = false;
           let direction = "down";
           let currentFrame = 0;
-          let invulnerable = false;
           ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
 
           window.onkeyup = () => {
