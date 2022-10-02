@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import level from "../../level.json";
 import "./style.css";
 
 /*
@@ -17,23 +18,38 @@ export default function World() {
     const ctx = canvas?.getContext("2d");
 
     if (canvas && ctx) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
       const tileSet = new Image();
       tileSet.src = "assets/overworld.png";
       tileSet.onload = () => {
-        const tileCountHorizontal = Math.ceil(canvas.width / 32);
-        const tileCountVertical = Math.ceil(canvas.height / 32);
+        level.layers.forEach(({ chunks }) => {
+          let i = 0;
+          for (let y = 0; y < level.height; y++) {
+            for (let x = 0; x < level.width; x++) {
+              const tile = chunks[0].data[i++] - 1;
+              if (tile < 0) {
+                continue;
+              }
 
-        for (let y = 0; y < tileCountVertical; y++) {
-          for (let x = 0; x < tileCountHorizontal; x++) {
-            ctx.drawImage(tileSet, 0, 0, 32, 32, x * 32, y * 32, 32, 32);
+              const tileX = (tile % 40) * 32;
+              const tileY = Math.floor(tile / 40) * 32;
+
+              ctx.drawImage(
+                tileSet,
+                tileX,
+                tileY,
+                32,
+                32,
+                x * 32,
+                y * 32,
+                32,
+                32
+              );
+            }
           }
-        }
+        });
       };
     }
   }, []);
 
-  return <canvas id="world-canvas"></canvas>;
+  return <canvas id="world-canvas" width="2048" height="1536"></canvas>;
 }
