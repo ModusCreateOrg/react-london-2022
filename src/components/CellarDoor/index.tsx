@@ -19,8 +19,8 @@ const CellarDoor: FunctionComponent<{ isOpen?: boolean }> = ({
     const ctx = canvas?.getContext("2d");
 
     if (canvas && ctx) {
-      canvas.style.left = "200px";
-      canvas.style.top = "200px";
+      canvas.style.left = "528px";
+      canvas.style.top = "272px";
 
       const tileSet = new Image();
       tileSet.src = "assets/overworld.png";

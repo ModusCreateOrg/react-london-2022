@@ -16,8 +16,8 @@ const House: FunctionComponent = () => {
     const ctx = canvas?.getContext("2d");
 
     if (canvas && ctx) {
-      canvas.style.left = "52px";
-      canvas.style.top = "40px";
+      canvas.style.left = "372px";
+      canvas.style.top = "192px";
 
       const tileSet = new Image();
       tileSet.src = "assets/overworld.png";
