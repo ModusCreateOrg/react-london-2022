@@ -1,4 +1,4 @@
-import { useEffect, FunctionComponent } from "react";
+import { useEffect, useRef, FC } from "react";
 import { TILE_SIZE, TILE_SETS } from "../../constants";
 import "./style.css";
 
@@ -8,94 +8,62 @@ const TILE_X = 0;
 const TILE_Y = 96;
 const ANIMATION_LENGTH = 3;
 
+type HeartProps = { left: number; top: number };
+
 /*
  * TODO:
- * - useRef instead of getElementById
  * - util function for tile set, tiles and animation
- * - create global constants for tile sets and tile size
- * - prefer to return early, flip the if condition
- * - clear interval on component destroy
  */
-const Heart: FunctionComponent<{ left: number; top: number }> = ({
-  left,
-  top,
-}) => {
+const Heart: FC<HeartProps> = ({ left, top }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    const canvas = document.getElementById(
-      "heart-canvas"
-    ) as HTMLCanvasElement | null;
-    const ctx = canvas?.getContext("2d");
+    const ctx = canvasRef.current?.getContext("2d");
+    let intervalId: number;
 
-    if (canvas && ctx) {
-      canvas.style.left = `${left}px`;
-      canvas.style.top = `${top}px`;
-
-      const tileSet = new Image();
-      tileSet.src = TILE_SETS.Objects;
-      tileSet.onload = () => {
-        let currentFrame = 0;
-
-        setInterval(() => {
-          ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
-          if (currentFrame === 0) {
-            ctx.drawImage(
-              tileSet,
-              TILE_X,
-              TILE_Y,
-              WIDTH,
-              HEIGHT,
-              0,
-              0,
-              WIDTH,
-              HEIGHT
-            );
-          } else if (currentFrame === 1) {
-            ctx.drawImage(
-              tileSet,
-              TILE_X + WIDTH,
-              TILE_Y,
-              WIDTH,
-              HEIGHT,
-              0,
-              0,
-              WIDTH,
-              HEIGHT
-            );
-          } else if (currentFrame === 2) {
-            ctx.drawImage(
-              tileSet,
-              TILE_X + WIDTH * 2,
-              TILE_Y,
-              WIDTH,
-              HEIGHT,
-              0,
-              0,
-              WIDTH,
-              HEIGHT
-            );
-          } else if (currentFrame === 3) {
-            ctx.drawImage(
-              tileSet,
-              TILE_X + WIDTH * 3,
-              TILE_Y,
-              WIDTH,
-              HEIGHT,
-              0,
-              0,
-              WIDTH,
-              HEIGHT
-            );
-          }
-
-          currentFrame =
-            currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
-        }, 75);
-      };
+    if (!canvasRef.current || !ctx) {
+      return;
     }
+    canvasRef.current.style.left = `${left}px`;
+    canvasRef.current.style.top = `${top}px`;
+
+    const tileSet = new Image();
+    tileSet.src = TILE_SETS.Objects;
+    tileSet.onload = () => {
+      let currentFrame = 0;
+
+      intervalId = window.setInterval(() => {
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+        ctx.drawImage(
+          tileSet,
+          TILE_X + WIDTH * currentFrame,
+          TILE_Y,
+          WIDTH,
+          HEIGHT,
+          0,
+          0,
+          WIDTH,
+          HEIGHT
+        );
+
+        currentFrame = currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
+      }, 75);
+    };
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [left, top]);
 
-  return <canvas id="heart-canvas" width={WIDTH} height={HEIGHT}></canvas>;
+  return (
+    <canvas
+      ref={canvasRef}
+      id="heart-canvas"
+      width={WIDTH}
+      height={HEIGHT}
+    ></canvas>
+  );
 };
 
 export default Heart;
