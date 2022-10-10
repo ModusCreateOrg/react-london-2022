@@ -1,5 +1,11 @@
 import { useEffect, FunctionComponent } from "react";
+import { TILE_SIZE, TILE_SETS } from "../../constants";
 import "./style.css";
+
+const WIDTH = TILE_SIZE;
+const HEIGHT = TILE_SIZE;
+const TILE_X = 64;
+const TILE_Y = 288;
 
 /*
  * TODO:
@@ -26,20 +32,40 @@ const Lever: FunctionComponent<{
       canvas.style.top = `${top}px`;
 
       const tileSet = new Image();
-      tileSet.src = "assets/objects.png";
+      tileSet.src = TILE_SETS.Objects;
       tileSet.onload = () => {
-        ctx.clearRect(0, 0, 32, 32);
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
         onInteract(used);
         if (used) {
-          ctx.drawImage(tileSet, 96, 288, 32, 32, 0, 0, 32, 32);
+          ctx.drawImage(
+            tileSet,
+            TILE_X + WIDTH,
+            TILE_Y,
+            WIDTH,
+            HEIGHT,
+            0,
+            0,
+            WIDTH,
+            HEIGHT
+          );
         } else {
-          ctx.drawImage(tileSet, 64, 288, 32, 32, 0, 0, 32, 32);
+          ctx.drawImage(
+            tileSet,
+            TILE_X,
+            TILE_Y,
+            WIDTH,
+            HEIGHT,
+            0,
+            0,
+            WIDTH,
+            HEIGHT
+          );
         }
       };
     }
   }, [left, top, used, onInteract]);
 
-  return <canvas id="lever-canvas" width="32" height="32"></canvas>;
+  return <canvas id="lever-canvas" width={WIDTH} height={HEIGHT}></canvas>;
 };
 
 export default Lever;

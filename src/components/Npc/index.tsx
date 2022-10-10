@@ -1,7 +1,14 @@
 import { useEffect, FunctionComponent } from "react";
+import { TILE_SETS } from "../../constants";
 import "./style.css";
 
-let increment = 10;
+const WIDTH = 32;
+const HEIGHT = 48;
+const TILE_X = 0;
+const TILE_Y = 8;
+const HUE_STEP = 10;
+
+let increment = HUE_STEP;
 
 /*
  * TODO:
@@ -26,10 +33,20 @@ const Npc: FunctionComponent<{
       canvas.style.top = `${top}px`;
 
       const tileSet = new Image();
-      tileSet.src = "assets/npc.png";
+      tileSet.src = TILE_SETS.Npc;
       tileSet.onload = () => {
-        ctx.clearRect(0, 0, 48, 48);
-        ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+        ctx.drawImage(
+          tileSet,
+          TILE_X,
+          TILE_Y,
+          WIDTH,
+          HEIGHT,
+          0,
+          0,
+          WIDTH,
+          HEIGHT
+        );
       };
 
       window.setInterval(() => {
@@ -37,9 +54,9 @@ const Npc: FunctionComponent<{
           canvas.style.filter.match(/\d+/)?.[0] || "0"
         );
         if (currentHue === 360) {
-          increment = -10;
+          increment = -HUE_STEP;
         } else if (currentHue === 0) {
-          increment = 10;
+          increment = HUE_STEP;
         }
         const hue = Math.max(0, Math.min(360, currentHue + increment));
         canvas.style.filter = `hue-rotate(${hue}deg)`;
@@ -47,7 +64,6 @@ const Npc: FunctionComponent<{
     }
   }, [left, top]);
 
-  return <canvas id="npc-canvas" width="48" height="48"></canvas>;
+  return <canvas id="npc-canvas" width={WIDTH} height={HEIGHT}></canvas>;
 };
-
 export default Npc;

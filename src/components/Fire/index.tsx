@@ -1,5 +1,12 @@
 import { useEffect, FunctionComponent } from "react";
+import { TILE_SIZE, TILE_SETS } from "../../constants";
 import "./style.css";
+
+const WIDTH = TILE_SIZE;
+const HEIGHT = TILE_SIZE;
+const TILE_X = 130;
+const TILE_Y = 98;
+const ANIMATION_LENGTH = 6;
 
 /*
  * TODO:
@@ -24,36 +31,107 @@ const Fire: FunctionComponent<{ left: number; top: number }> = ({
       canvas.style.top = `${top}px`;
 
       const tileSet = new Image();
-      tileSet.src = "assets/objects.png";
+      tileSet.src = TILE_SETS.Objects;
       tileSet.onload = () => {
         let currentFrame = 0;
 
         setInterval(() => {
-          ctx.clearRect(0, 0, 32, 32);
+          ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
           if (currentFrame === 0) {
-            ctx.drawImage(tileSet, 130, 98, 32, 32, 0, 0, 32, 32);
+            ctx.drawImage(
+              tileSet,
+              TILE_X,
+              TILE_Y,
+              WIDTH,
+              HEIGHT,
+              0,
+              0,
+              WIDTH,
+              HEIGHT
+            );
           } else if (currentFrame === 1) {
-            ctx.drawImage(tileSet, 162, 98, 32, 32, 0, 0, 32, 32);
+            ctx.drawImage(
+              tileSet,
+              TILE_X + WIDTH,
+              TILE_Y,
+              WIDTH,
+              HEIGHT,
+              0,
+              0,
+              WIDTH,
+              HEIGHT
+            );
           } else if (currentFrame === 2) {
-            ctx.drawImage(tileSet, 194, 98, 32, 32, 0, 0, 32, 32);
+            ctx.drawImage(
+              tileSet,
+              TILE_X + WIDTH * 2,
+              TILE_Y,
+              WIDTH,
+              HEIGHT,
+              0,
+              0,
+              WIDTH,
+              HEIGHT
+            );
           } else if (currentFrame === 3) {
-            ctx.drawImage(tileSet, 226, 98, 32, 32, 0, 0, 32, 32);
+            ctx.drawImage(
+              tileSet,
+              TILE_X + WIDTH * 3,
+              TILE_Y,
+              WIDTH,
+              HEIGHT,
+              0,
+              0,
+              WIDTH,
+              HEIGHT
+            );
           } else if (currentFrame === 4) {
-            ctx.drawImage(tileSet, 258, 98, 32, 32, 0, 0, 32, 32);
+            ctx.drawImage(
+              tileSet,
+              TILE_X + WIDTH * 4,
+              TILE_Y,
+              WIDTH,
+              HEIGHT,
+              0,
+              0,
+              WIDTH,
+              HEIGHT
+            );
           } else if (currentFrame === 5) {
-            ctx.drawImage(tileSet, 290, 98, 32, 32, 0, 0, 32, 32);
+            ctx.drawImage(
+              tileSet,
+              TILE_X + WIDTH * 5,
+              TILE_Y,
+              WIDTH,
+              HEIGHT,
+              0,
+              0,
+              WIDTH,
+              HEIGHT
+            );
           } else if (currentFrame === 6) {
-            ctx.drawImage(tileSet, 322, 98, 32, 32, 0, 0, 32, 32);
+            ctx.drawImage(
+              tileSet,
+              TILE_X + WIDTH * 6,
+              TILE_Y,
+              WIDTH,
+              HEIGHT,
+              0,
+              0,
+              WIDTH,
+              HEIGHT
+            );
           }
 
-          currentFrame = currentFrame === 6 ? 0 : currentFrame + 1;
+          currentFrame =
+            currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
         }, 125);
       };
     }
   }, [left, top]);
 
-  return <canvas id="fire-canvas" width="32" height="32"></canvas>;
+  return <canvas id="fire-canvas" width={WIDTH} height={HEIGHT}></canvas>;
 };
 
 export default Fire;

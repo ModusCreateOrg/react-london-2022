@@ -1,5 +1,11 @@
 import { useEffect, FunctionComponent } from "react";
+import { TILE_SETS } from "../../constants";
 import "./style.css";
+
+const WIDTH = 148;
+const HEIGHT = 160;
+const TILE_X = 198;
+const TILE_Y = 0;
 
 /*
  * TODO:
@@ -20,14 +26,24 @@ const House: FunctionComponent = () => {
       canvas.style.top = "192px";
 
       const tileSet = new Image();
-      tileSet.src = "assets/overworld.png";
+      tileSet.src = TILE_SETS.World;
       tileSet.onload = () => {
-        ctx.drawImage(tileSet, 198, 0, 148, 160, 0, 0, 148, 160);
+        ctx.drawImage(
+          tileSet,
+          TILE_X,
+          TILE_Y,
+          WIDTH,
+          HEIGHT,
+          0,
+          0,
+          WIDTH,
+          HEIGHT
+        );
       };
     }
   }, []);
 
-  return <canvas id="house-canvas" width="148" height="160"></canvas>;
+  return <canvas id="house-canvas" width={WIDTH} height={HEIGHT}></canvas>;
 };
 
 export default House;

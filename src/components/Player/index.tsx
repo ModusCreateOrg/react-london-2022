@@ -1,5 +1,13 @@
-import { useEffect, FunctionComponent } from "react";
+import { useEffect, FunctionComponent, useContext } from "react";
+import { GAME_STATES, TILE_SETS, TILE_SIZE } from "../../constants";
+import { GlobalContext } from "../../contexts";
 import "./style.css";
+
+const WIDTH = 32;
+const HEIGHT = 48;
+const TILE_X = 0;
+const TILE_Y = 8;
+const ANIMATION_LENGTH = 3;
 
 /*
  * TODO:
@@ -19,6 +27,7 @@ const Player: FunctionComponent<{
   onInteract: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
   onCollision: (health: number | ((prev: number) => number)) => void;
 }> = ({ health, onInteract, onCollision }) => {
+  const { setGameState } = useContext(GlobalContext);
   useEffect(() => {
     const canvas = document.getElementById(
       "player-canvas"
@@ -40,7 +49,7 @@ const Player: FunctionComponent<{
       const ctx = healthCanvas.getContext("2d");
       if (ctx) {
         const tileSet = new Image();
-        tileSet.src = "assets/objects.png";
+        tileSet.src = TILE_SETS.Objects;
         tileSet.onload = () => {
           ctx.clearRect(0, 0, 30, 26);
           if (health === 4) {
@@ -65,25 +74,75 @@ const Player: FunctionComponent<{
 
       if (ctx) {
         const tileSet = new Image();
-        tileSet.src = "assets/character.png";
+        tileSet.src = TILE_SETS.Player;
         tileSet.onload = () => {
           let keyPressed = false;
           let direction = "down";
           let currentFrame = 0;
-          ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+          ctx.drawImage(
+            tileSet,
+            TILE_X,
+            TILE_Y,
+            WIDTH,
+            HEIGHT,
+            0,
+            0,
+            WIDTH,
+            HEIGHT
+          );
 
           window.onkeyup = () => {
             currentFrame = 0;
             keyPressed = false;
-            ctx.clearRect(0, 0, 48, 48);
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
             if (direction === "up") {
-              ctx.drawImage(tileSet, 0, 136, 32, 48, 8, 0, 32, 48);
+              ctx.drawImage(
+                tileSet,
+                TILE_X,
+                TILE_Y + TILE_SIZE * 4,
+                WIDTH,
+                HEIGHT,
+                0,
+                0,
+                WIDTH,
+                HEIGHT
+              );
             } else if (direction === "left") {
-              ctx.drawImage(tileSet, 0, 200, 32, 48, 8, 0, 32, 48);
+              ctx.drawImage(
+                tileSet,
+                TILE_X,
+                TILE_Y + TILE_SIZE * 6,
+                WIDTH,
+                HEIGHT,
+                0,
+                0,
+                WIDTH,
+                HEIGHT
+              );
             } else if (direction === "down") {
-              ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+              ctx.drawImage(
+                tileSet,
+                TILE_X,
+                TILE_Y,
+                WIDTH,
+                HEIGHT,
+                0,
+                0,
+                WIDTH,
+                HEIGHT
+              );
             } else if (direction === "right") {
-              ctx.drawImage(tileSet, 0, 72, 32, 48, 8, 0, 32, 48);
+              ctx.drawImage(
+                tileSet,
+                TILE_X,
+                TILE_Y + TILE_SIZE * 2,
+                WIDTH,
+                HEIGHT,
+                0,
+                0,
+                WIDTH,
+                HEIGHT
+              );
             }
           };
 
@@ -193,77 +252,240 @@ const Player: FunctionComponent<{
 
               if (!keyPressed) {
                 keyPressed = true;
-                ctx.clearRect(0, 0, 48, 48);
+                ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
                 if (currentFrame === 0) {
                   if (direction === "up") {
-                    ctx.drawImage(tileSet, 0, 136, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X,
+                      TILE_Y + TILE_SIZE * 4,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "left") {
-                    ctx.drawImage(tileSet, 0, 200, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X,
+                      TILE_Y + TILE_SIZE * 6,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "down") {
-                    ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X,
+                      TILE_Y,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "right") {
-                    ctx.drawImage(tileSet, 0, 72, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X,
+                      TILE_Y + TILE_SIZE * 2,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                 } else if (currentFrame === 1) {
                   if (direction === "up") {
-                    ctx.drawImage(tileSet, 32, 136, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X + WIDTH,
+                      TILE_Y + TILE_SIZE * 4,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "left") {
-                    ctx.drawImage(tileSet, 32, 200, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X + WIDTH,
+                      TILE_Y + TILE_SIZE * 6,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "down") {
-                    ctx.drawImage(tileSet, 32, 8, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X + WIDTH,
+                      TILE_Y,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "right") {
-                    ctx.drawImage(tileSet, 32, 72, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X + WIDTH,
+                      TILE_Y + TILE_SIZE * 2,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                 } else if (currentFrame === 2) {
                   if (direction === "up") {
-                    ctx.drawImage(tileSet, 0, 136, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X,
+                      TILE_Y + TILE_SIZE * 4,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "left") {
-                    ctx.drawImage(tileSet, 0, 200, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X,
+                      TILE_Y + TILE_SIZE * 6,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "down") {
-                    ctx.drawImage(tileSet, 0, 8, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X,
+                      TILE_Y,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "right") {
-                    ctx.drawImage(tileSet, 0, 72, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X,
+                      TILE_Y + TILE_SIZE * 2,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                 } else if (currentFrame === 3) {
                   if (direction === "up") {
-                    ctx.drawImage(tileSet, 96, 136, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X + WIDTH * 3,
+                      TILE_Y + TILE_SIZE * 4,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "left") {
-                    ctx.drawImage(tileSet, 96, 200, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X + WIDTH * 3,
+                      TILE_Y + TILE_SIZE * 6,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "down") {
-                    ctx.drawImage(tileSet, 96, 8, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X + WIDTH * 3,
+                      TILE_Y,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                   if (direction === "right") {
-                    ctx.drawImage(tileSet, 96, 72, 32, 48, 8, 0, 32, 48);
+                    ctx.drawImage(
+                      tileSet,
+                      TILE_X + WIDTH * 3,
+                      TILE_Y + TILE_SIZE * 2,
+                      WIDTH,
+                      HEIGHT,
+                      0,
+                      0,
+                      WIDTH,
+                      HEIGHT
+                    );
                   }
                 }
 
                 setTimeout(() => {
                   keyPressed = false;
-                  currentFrame = currentFrame === 3 ? 0 : currentFrame + 1;
+                  currentFrame =
+                    currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
                 }, 125);
               }
+            } else {
+              setGameState(GAME_STATES.GameOver);
             }
           };
         };
       }
     }
-  }, [onInteract, onCollision, health]);
+  }, [onInteract, onCollision, health, setGameState]);
 
   return (
     <>
-      <canvas id="player-canvas" width="48" height="48"></canvas>
+      <canvas id="player-canvas" width={WIDTH} height={HEIGHT}></canvas>
       <canvas id="health-canvas" width="30" height="26"></canvas>
     </>
   );
