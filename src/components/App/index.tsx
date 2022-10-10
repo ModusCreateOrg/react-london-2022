@@ -30,19 +30,21 @@ export default function App() {
         {gameState === GAME_STATES.GameOver && <GameOver />}
         <World />
         <Player
+          top={328}
+          left={420}
           health={playerHealth}
           onInteract={setIsLeverUsed}
           onCollision={setPlayerHealth}
         />
         <Npc left={1608} top={224} />
-        <CellarDoor isOpen={isCellarDoorOpen} />
+        <CellarDoor isOpen={isCellarDoorOpen} left={528} top={272} />
         <Lever
           left={600}
           top={264}
           used={isLeverUsed}
           onInteract={setIsCellarDoorOpen}
         />
-        <House />
+        <House left={372} top={192} />
         <Fire left={480} top={524} />
         <Heart left={320} top={828} />
         <Coin left={1152} top={1172} />

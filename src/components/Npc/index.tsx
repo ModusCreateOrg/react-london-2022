@@ -1,4 +1,4 @@
-import { useEffect, FunctionComponent } from "react";
+import { useEffect, useRef, FC } from "react";
 import { TILE_SETS } from "../../constants";
 import "./style.css";
 
@@ -10,60 +10,72 @@ const HUE_STEP = 10;
 
 let increment = HUE_STEP;
 
+type NpcProps = { left: number; top: number };
+
 /*
  * TODO:
- * - useRef instead of getElementById
  * - util function for tile set, tiles and animation
- * - create global constants for tile sets and tile size
- * - prefer to return early, flip the if condition
- * - clear interval on component destroy
  */
-const Npc: FunctionComponent<{
-  left: number;
-  top: number;
-}> = ({ left, top }) => {
+const Npc: FC<NpcProps> = ({ left, top }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    const canvas = document.getElementById(
-      "npc-canvas"
-    ) as HTMLCanvasElement | null;
-    const ctx = canvas?.getContext("2d");
+    const ctx = canvasRef.current?.getContext("2d");
+    let intervalId: number;
 
-    if (canvas && ctx) {
-      canvas.style.left = `${left}px`;
-      canvas.style.top = `${top}px`;
-
-      const tileSet = new Image();
-      tileSet.src = TILE_SETS.Npc;
-      tileSet.onload = () => {
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
-        ctx.drawImage(
-          tileSet,
-          TILE_X,
-          TILE_Y,
-          WIDTH,
-          HEIGHT,
-          0,
-          0,
-          WIDTH,
-          HEIGHT
-        );
-      };
-
-      window.setInterval(() => {
-        const currentHue = parseInt(
-          canvas.style.filter.match(/\d+/)?.[0] || "0"
-        );
-        if (currentHue === 360) {
-          increment = -HUE_STEP;
-        } else if (currentHue === 0) {
-          increment = HUE_STEP;
-        }
-        const hue = Math.max(0, Math.min(360, currentHue + increment));
-        canvas.style.filter = `hue-rotate(${hue}deg)`;
-      }, 100);
+    if (!canvasRef.current || !ctx) {
+      return;
     }
+
+    canvasRef.current.style.left = `${left}px`;
+    canvasRef.current.style.top = `${top}px`;
+
+    const tileSet = new Image();
+    tileSet.src = TILE_SETS.Npc;
+    tileSet.onload = () => {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+      ctx.drawImage(
+        tileSet,
+        TILE_X,
+        TILE_Y,
+        WIDTH,
+        HEIGHT,
+        0,
+        0,
+        WIDTH,
+        HEIGHT
+      );
+    };
+
+    intervalId = window.setInterval(() => {
+      if (!canvasRef.current) {
+        return;
+      }
+
+      const currentHue = parseInt(
+        canvasRef.current.style.filter.match(/\d+/)?.[0] || "0"
+      );
+      if (currentHue === 360) {
+        increment = -HUE_STEP;
+      } else if (currentHue === 0) {
+        increment = HUE_STEP;
+      }
+      const hue = Math.max(0, Math.min(360, currentHue + increment));
+      canvasRef.current.style.filter = `hue-rotate(${hue}deg)`;
+    }, 100);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [left, top]);
 
-  return <canvas id="npc-canvas" width={WIDTH} height={HEIGHT}></canvas>;
+  return (
+    <canvas
+      ref={canvasRef}
+      id="npc-canvas"
+      width={WIDTH}
+      height={HEIGHT}
+    ></canvas>
+  );
 };
 export default Npc;
