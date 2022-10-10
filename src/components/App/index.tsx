@@ -1,15 +1,15 @@
 import { useState } from "react";
-import World from "./components/World";
-import Player from "./components/Player";
-import Npc from "./components/Npc";
-import Heart from "./components/Heart";
-import Coin from "./components/Coin";
-import CellarDoor from "./components/CellarDoor";
-import Lever from "./components/Lever";
-import House from "./components/House";
-import Fire from "./components/Fire";
-import GameOver from "./components/GameOver";
-import "./App.css";
+import World from "../World";
+import Player from "../Player";
+import Npc from "../Npc";
+import Heart from "../Heart";
+import Coin from "../Coin";
+import CellarDoor from "../CellarDoor";
+import Lever from "../Lever";
+import House from "../House";
+import Fire from "../Fire";
+import GameOver from "../GameOver";
+import "./style.css";
 
 /*
  * TODO:
