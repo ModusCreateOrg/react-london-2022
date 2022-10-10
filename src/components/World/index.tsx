@@ -1,6 +1,15 @@
 import { useEffect } from "react";
+import {
+  WORLD_WIDTH,
+  WORLD_HEIGHT,
+  TILE_SIZE,
+  TILE_SETS,
+} from "../../constants";
 import level from "../../level.json";
 import "./style.css";
+
+// Number of tiles in the tilset
+const TILES_COUNT = 40;
 
 /*
  * Refactor:
@@ -19,30 +28,31 @@ export default function World() {
 
     if (canvas && ctx) {
       const tileSet = new Image();
-      tileSet.src = "assets/overworld.png";
+      tileSet.src = TILE_SETS.World;
       tileSet.onload = () => {
         level.layers.forEach(({ chunks }) => {
           let i = 0;
           for (let y = 0; y < level.height; y++) {
             for (let x = 0; x < level.width; x++) {
+              // Tiled exports tiles counting from 1 rather than 0
               const tile = chunks[0].data[i++] - 1;
               if (tile < 0) {
                 continue;
               }
 
-              const tileX = (tile % 40) * 32;
-              const tileY = Math.floor(tile / 40) * 32;
+              const tileX = (tile % TILES_COUNT) * TILE_SIZE;
+              const tileY = Math.floor(tile / TILES_COUNT) * TILE_SIZE;
 
               ctx.drawImage(
                 tileSet,
                 tileX,
                 tileY,
-                32,
-                32,
-                x * 32,
-                y * 32,
-                32,
-                32
+                TILE_SIZE,
+                TILE_SIZE,
+                x * TILE_SIZE,
+                y * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE
               );
             }
           }
@@ -51,5 +61,11 @@ export default function World() {
     }
   }, []);
 
-  return <canvas id="world-canvas" width="2048" height="1536"></canvas>;
+  return (
+    <canvas
+      id="world-canvas"
+      width={WORLD_WIDTH}
+      height={WORLD_HEIGHT}
+    ></canvas>
+  );
 }

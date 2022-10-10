@@ -1,5 +1,11 @@
 import { useEffect, FunctionComponent } from "react";
+import { TILE_SETS } from "../../constants";
 import "./style.css";
+
+const WIDTH = 64;
+const HEIGHT = 64;
+const TILE_X = 992;
+const TILE_Y = 160;
 
 /*
  * TODO:
@@ -23,20 +29,42 @@ const CellarDoor: FunctionComponent<{ isOpen?: boolean }> = ({
       canvas.style.top = "272px";
 
       const tileSet = new Image();
-      tileSet.src = "assets/overworld.png";
+      tileSet.src = TILE_SETS.World;
       tileSet.onload = () => {
-        ctx.clearRect(0, 0, 64, 64);
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
         if (isOpen) {
-          ctx.drawImage(tileSet, 1056, 160, 64, 64, 0, 0, 64, 64);
+          ctx.drawImage(
+            tileSet,
+            TILE_X + WIDTH,
+            TILE_Y,
+            WIDTH,
+            HEIGHT,
+            0,
+            0,
+            WIDTH,
+            HEIGHT
+          );
         } else {
-          ctx.drawImage(tileSet, 992, 160, 64, 64, 0, 0, 64, 64);
+          ctx.drawImage(
+            tileSet,
+            TILE_X,
+            TILE_Y,
+            WIDTH,
+            HEIGHT,
+            0,
+            0,
+            WIDTH,
+            HEIGHT
+          );
         }
       };
     }
   }, [isOpen]);
 
-  return <canvas id="cellar-door-canvas" width="64" height="64"></canvas>;
+  return (
+    <canvas id="cellar-door-canvas" width={WIDTH} height={HEIGHT}></canvas>
+  );
 };
 
 export default CellarDoor;
