@@ -2,6 +2,7 @@ import { useState } from "react";
 import { GlobalContext } from "../../contexts";
 import World from "../World";
 import Player from "../Player";
+import PlayerHealth from "../PlayerHealth";
 import Npc from "../Npc";
 import Heart from "../Heart";
 import Coin from "../Coin";
@@ -10,7 +11,7 @@ import Lever from "../Lever";
 import House from "../House";
 import Fire from "../Fire";
 import GameOver from "../GameOver";
-import { GAME_STATES } from "../../constants";
+import { GAME_STATES, MAX_HEALTH } from "../../constants";
 import "./style.css";
 
 /*
@@ -22,17 +23,19 @@ export default function App() {
   const [gameState, setGameState] = useState<GAME_STATES>(GAME_STATES.Game);
   const [isCellarDoorOpen, setIsCellarDoorOpen] = useState(false);
   const [isLeverUsed, setIsLeverUsed] = useState(false);
-  const [playerHealth, setPlayerHealth] = useState(4);
+  const [playerHealth, setPlayerHealth] = useState(MAX_HEALTH);
 
   return (
     <div className="App">
-      <GlobalContext.Provider value={{ gameState: gameState, setGameState }}>
+      <GlobalContext.Provider
+        value={{ gameState: gameState, setGameState, playerHealth }}
+      >
         {gameState === GAME_STATES.GameOver && <GameOver />}
         <World />
+        <PlayerHealth />
         <Player
           top={328}
           left={420}
-          health={playerHealth}
           onInteract={setIsLeverUsed}
           onCollision={setPlayerHealth}
         />
