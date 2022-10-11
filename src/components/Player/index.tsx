@@ -1,13 +1,10 @@
 import { useEffect, useRef, FC, useContext } from "react";
-import { GAME_STATES, TILE_SETS, TILE_SIZE } from "../../constants";
+import { GAME_STATES, TILE_SETS } from "../../constants";
 import { GlobalContext } from "../../contexts";
+import { Vector } from "../../utils";
+import { ANIMATION_LENGTH, HEIGHT, Input, WIDTH } from "./constants";
+import { drawFrame, getInputVector, move } from "./utils";
 import "./style.css";
-
-const WIDTH = 32;
-const HEIGHT = 48;
-const TILE_X = 0;
-const TILE_Y = 8;
-const ANIMATION_LENGTH = 3;
 
 type PlayerProps = {
   top: number;
@@ -18,8 +15,6 @@ type PlayerProps = {
 
 /*
  * TODO:
- * - 2D Vectors for movement direction
- * - util function for tile set, tiles and animation
  * - move object specific interactions outside of Player
  * - move player controls to global context
  * - use input loop to remove keydown delay
@@ -41,90 +36,27 @@ const Player: FC<PlayerProps> = ({ onInteract, onCollision, top, left }) => {
       "coin-canvas"
     ) as HTMLCanvasElement | null;
 
-    if (!canvasRef.current) {
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!canvasRef.current || !ctx) {
       return;
     }
 
     canvasRef.current.style.top = canvasRef.current.style.top || `${top}px`;
     canvasRef.current.style.left = canvasRef.current.style.left || `${left}px`;
-    const ctx = canvasRef.current.getContext("2d");
-
-    if (!ctx) {
-      return;
-    }
 
     const tileSet = new Image();
     tileSet.src = TILE_SETS.Player;
     tileSet.onload = () => {
       let keyPressed = false;
-      let direction = "down";
+      let direction = Vector.Down;
       let currentFrame = 0;
-      ctx.drawImage(
-        tileSet,
-        TILE_X,
-        TILE_Y,
-        WIDTH,
-        HEIGHT,
-        0,
-        0,
-        WIDTH,
-        HEIGHT
-      );
+
+      drawFrame(ctx, tileSet, direction, currentFrame);
 
       window.onkeyup = () => {
         currentFrame = 0;
         keyPressed = false;
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
-        if (direction === "up") {
-          ctx.drawImage(
-            tileSet,
-            TILE_X,
-            TILE_Y + TILE_SIZE * 4,
-            WIDTH,
-            HEIGHT,
-            0,
-            0,
-            WIDTH,
-            HEIGHT
-          );
-        } else if (direction === "left") {
-          ctx.drawImage(
-            tileSet,
-            TILE_X,
-            TILE_Y + TILE_SIZE * 6,
-            WIDTH,
-            HEIGHT,
-            0,
-            0,
-            WIDTH,
-            HEIGHT
-          );
-        } else if (direction === "down") {
-          ctx.drawImage(
-            tileSet,
-            TILE_X,
-            TILE_Y,
-            WIDTH,
-            HEIGHT,
-            0,
-            0,
-            WIDTH,
-            HEIGHT
-          );
-        } else if (direction === "right") {
-          ctx.drawImage(
-            tileSet,
-            TILE_X,
-            TILE_Y + TILE_SIZE * 2,
-            WIDTH,
-            HEIGHT,
-            0,
-            0,
-            WIDTH,
-            HEIGHT
-          );
-        }
+        drawFrame(ctx, tileSet, direction, currentFrame);
       };
 
       window.onkeydown = (event) => {
@@ -164,29 +96,12 @@ const Player: FC<PlayerProps> = ({ onInteract, onCollision, top, left }) => {
             coinCanvas.remove();
           }
 
-          if (event.key === " " || event.key === "Enter") {
+          if (Input.Interact.includes(event.key)) {
             onInteract((wasOpen) => !wasOpen);
-          } else if (event.key === "w" || event.key === "ArrowUp") {
-            direction = "up";
-            canvasRef.current.style.top = `${
-              parseInt(canvasRef.current.style.top || "0") - 4
-            }px`;
-          } else if (event.key === "s" || event.key === "ArrowDown") {
-            direction = "down";
-            canvasRef.current.style.top = `${
-              parseInt(canvasRef.current.style.top || "0") + 4
-            }px`;
-          } else if (event.key === "a" || event.key === "ArrowLeft") {
-            direction = "left";
-            canvasRef.current.style.left = `${
-              parseInt(canvasRef.current.style.left || "0") - 4
-            }px`;
-          } else if (event.key === "d" || event.key === "ArrowRight") {
-            direction = "right";
-            canvasRef.current.style.left = `${
-              parseInt(canvasRef.current.style.left || "0") + 4
-            }px`;
           }
+
+          direction = getInputVector(event.key);
+          move(direction, canvasRef.current);
 
           if (
             fireCanvas &&
@@ -249,60 +164,7 @@ const Player: FC<PlayerProps> = ({ onInteract, onCollision, top, left }) => {
 
           if (!keyPressed) {
             keyPressed = true;
-            ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
-            if (direction === "up") {
-              ctx.drawImage(
-                tileSet,
-                TILE_X + WIDTH * currentFrame,
-                TILE_Y + TILE_SIZE * 4,
-                WIDTH,
-                HEIGHT,
-                0,
-                0,
-                WIDTH,
-                HEIGHT
-              );
-            }
-            if (direction === "left") {
-              ctx.drawImage(
-                tileSet,
-                TILE_X + WIDTH * currentFrame,
-                TILE_Y + TILE_SIZE * 6,
-                WIDTH,
-                HEIGHT,
-                0,
-                0,
-                WIDTH,
-                HEIGHT
-              );
-            }
-            if (direction === "down") {
-              ctx.drawImage(
-                tileSet,
-                TILE_X + WIDTH * currentFrame,
-                TILE_Y,
-                WIDTH,
-                HEIGHT,
-                0,
-                0,
-                WIDTH,
-                HEIGHT
-              );
-            }
-            if (direction === "right") {
-              ctx.drawImage(
-                tileSet,
-                TILE_X + WIDTH * currentFrame,
-                TILE_Y + TILE_SIZE * 2,
-                WIDTH,
-                HEIGHT,
-                0,
-                0,
-                WIDTH,
-                HEIGHT
-              );
-            }
+            drawFrame(ctx, tileSet, direction, currentFrame);
 
             setTimeout(() => {
               keyPressed = false;
