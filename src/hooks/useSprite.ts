@@ -8,8 +8,8 @@ export type SpriteProps = {
   height: number;
   tileX: number;
   tileY: number;
-  left: number;
-  top: number;
+  left?: number;
+  top?: number;
 };
 
 export const useSprite = (props: SpriteProps) => {
@@ -20,8 +20,8 @@ export const useSprite = (props: SpriteProps) => {
       return;
     }
 
-    props.canvasRef.current.style.left = `${props.left}px`;
-    props.canvasRef.current.style.top = `${props.top}px`;
+    props.left && (props.canvasRef.current.style.left = `${props.left}px`);
+    props.top && (props.canvasRef.current.style.top = `${props.top}px`);
 
     const sprite = new Image();
     sprite.src = props.tileSet;

@@ -12,7 +12,6 @@ const ANIMATION_LENGTH = 3;
 type PlayerProps = {
   top: number;
   left: number;
-  health: number;
   onInteract: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
   onCollision: (health: number | ((prev: number) => number)) => void;
 };
@@ -27,22 +26,13 @@ type PlayerProps = {
  * - create util function for collisions
  */
 let invulnerable = false;
-const Player: FC<PlayerProps> = ({
-  health,
-  onInteract,
-  onCollision,
-  top,
-  left,
-}) => {
+const Player: FC<PlayerProps> = ({ onInteract, onCollision, top, left }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { setGameState } = useContext(GlobalContext);
+  const { setGameState, playerHealth } = useContext(GlobalContext);
 
   useEffect(() => {
     const fireCanvas = document.getElementById(
       "fire-canvas"
-    ) as HTMLCanvasElement | null;
-    const healthCanvas = document.getElementById(
-      "health-canvas"
     ) as HTMLCanvasElement | null;
     const heartCanvas = document.getElementById(
       "heart-canvas"
@@ -50,28 +40,6 @@ const Player: FC<PlayerProps> = ({
     const coinCanvas = document.getElementById(
       "coin-canvas"
     ) as HTMLCanvasElement | null;
-
-    if (healthCanvas) {
-      const ctx = healthCanvas.getContext("2d");
-      if (ctx) {
-        const tileSet = new Image();
-        tileSet.src = TILE_SETS.Objects;
-        tileSet.onload = () => {
-          ctx.clearRect(0, 0, 30, 26);
-          if (health === 4) {
-            ctx.drawImage(tileSet, 128, 4, 30, 26, 0, 0, 30, 26);
-          } else if (health === 3) {
-            ctx.drawImage(tileSet, 160, 4, 30, 26, 0, 0, 30, 26);
-          } else if (health === 2) {
-            ctx.drawImage(tileSet, 192, 4, 30, 26, 0, 0, 30, 26);
-          } else if (health === 1) {
-            ctx.drawImage(tileSet, 224, 4, 30, 26, 0, 0, 30, 26);
-          } else if (health === 0) {
-            ctx.drawImage(tileSet, 256, 4, 30, 26, 0, 0, 30, 26);
-          }
-        };
-      }
-    }
 
     if (!canvasRef.current) {
       return;
@@ -164,8 +132,8 @@ const Player: FC<PlayerProps> = ({
           return;
         }
 
-        if (health > 0) {
-          if (health < 4) {
+        if (playerHealth > 0) {
+          if (playerHealth < 4) {
             if (
               heartCanvas &&
               parseInt(canvasRef.current.style.left || "0") + 6 <=
@@ -177,7 +145,7 @@ const Player: FC<PlayerProps> = ({
               parseInt(canvasRef.current.style.top || "0") + 36 >=
                 parseInt(heartCanvas.style.top || "0") + 16
             ) {
-              onCollision((health) => Math.min(4, health + 1));
+              onCollision((playerHealth) => Math.min(4, playerHealth + 1));
               heartCanvas.remove();
             }
           }
@@ -254,7 +222,7 @@ const Player: FC<PlayerProps> = ({
               )}px`;
             }
 
-            onCollision((health) => Math.max(0, health - 1));
+            onCollision((playerHealth) => Math.max(0, playerHealth - 1));
             invulnerable = true;
             canvasRef.current.style.filter = "brightness(6)";
 
@@ -347,7 +315,7 @@ const Player: FC<PlayerProps> = ({
         }
       };
     };
-  }, [onInteract, onCollision, health, setGameState, top, left]);
+  }, [onInteract, onCollision, playerHealth, setGameState, top, left]);
 
   return (
     <>
@@ -357,7 +325,6 @@ const Player: FC<PlayerProps> = ({
         width={WIDTH}
         height={HEIGHT}
       ></canvas>
-      <canvas id="health-canvas" width="30" height="26"></canvas>
     </>
   );
 };

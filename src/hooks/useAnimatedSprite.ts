@@ -15,8 +15,8 @@ export const useAnimatedSprite = (props: AnimatedSpriteProps) => {
       return;
     }
 
-    props.canvasRef.current.style.left = `${props.left}px`;
-    props.canvasRef.current.style.top = `${props.top}px`;
+    props.left && (props.canvasRef.current.style.left = `${props.left}px`);
+    props.top && (props.canvasRef.current.style.top = `${props.top}px`);
 
     const sprite = new Image();
     sprite.src = props.tileSet;
