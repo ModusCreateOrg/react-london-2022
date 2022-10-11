@@ -1,61 +1,28 @@
-import { useEffect, useRef, FC } from "react";
+import { useRef, FC } from "react";
 import { TILE_SIZE, TILE_SETS } from "../../constants";
+import { useAnimatedSprite } from "../../hooks";
 import "./style.css";
 
 const WIDTH = TILE_SIZE;
 const HEIGHT = TILE_SIZE;
-const TILE_X = 0;
-const TILE_Y = 128;
-const ANIMATION_LENGTH = 3;
 
 type CoinProps = { left: number; top: number };
 
-/*
- * TODO:
- * - util function for tile set, tiles and animation
- */
 const Coin: FC<CoinProps> = ({ left, top }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const ctx = canvasRef.current?.getContext("2d");
-    let intervalId: number;
-
-    if (!canvasRef.current || !ctx) {
-      return;
-    }
-
-    canvasRef.current.style.left = `${left}px`;
-    canvasRef.current.style.top = `${top}px`;
-
-    const tileSet = new Image();
-    tileSet.src = TILE_SETS.Objects;
-    tileSet.onload = () => {
-      let currentFrame = 0;
-
-      intervalId = window.setInterval(() => {
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
-        ctx.drawImage(
-          tileSet,
-          TILE_X + WIDTH * currentFrame,
-          TILE_Y,
-          WIDTH,
-          HEIGHT,
-          0,
-          0,
-          WIDTH,
-          HEIGHT
-        );
-
-        currentFrame = currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
-      }, 100);
-    };
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [left, top]);
+  useAnimatedSprite({
+    canvasRef,
+    left,
+    top,
+    tileSet: TILE_SETS.Objects,
+    width: WIDTH,
+    height: HEIGHT,
+    tileX: 0,
+    tileY: 128,
+    animationLength: 3,
+    animationSpeed: 100,
+  });
 
   return (
     <canvas
