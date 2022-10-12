@@ -20,16 +20,19 @@ type HeartProps = { left: number; top: number };
 const Heart: FC<HeartProps> = ({ left, top }) => {
   const [position, setPosition] = useState<Vector>(new Vector(left, top));
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const updatePosition = (c: Collider) => {
     const newPosition = getRandomPosition(WIDTH, HEIGHT);
     setPosition(newPosition);
     c.rect.moveTo(newPosition.x, newPosition.y);
   };
+
   const collider = new Collider(
     new Rect(position.x, position.y, WIDTH, HEIGHT),
     ColliderType.Health,
     updatePosition
   );
+
   const colliderRef = useRef<Collider>(collider);
 
   useColliders(colliderRef);

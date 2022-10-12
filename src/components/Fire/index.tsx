@@ -13,11 +13,11 @@ type FireProps = { left: number; top: number };
 
 const Fire: FC<FireProps> = ({ left, top }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const collider = useRef<Collider>(
+  const colliderRef = useRef<Collider>(
     new Collider(new Rect(left, top, WIDTH, HEIGHT), ColliderType.Damage)
   );
 
-  useColliders(collider);
+  useColliders(colliderRef);
 
   useAnimatedSprite({
     canvasRef,

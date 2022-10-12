@@ -21,14 +21,14 @@ const Coin: FC<CoinProps> = ({ left, top }) => {
   const onCollision = (c: Collider) => {
     setScore(POINTS);
     setIsHidden(true);
-    collider.current.hide();
+    c.hide();
 
     setTimeout(() => {
-      collider.current.show();
+      c.show();
       setIsHidden(false);
     }, TIMEOUT);
   };
-  const collider = useRef<Collider>(
+  const colliderRef = useRef<Collider>(
     new Collider(
       new Rect(left, top, WIDTH, HEIGHT),
       ColliderType.Bonus,
@@ -36,7 +36,7 @@ const Coin: FC<CoinProps> = ({ left, top }) => {
     )
   );
 
-  useColliders(collider);
+  useColliders(colliderRef);
 
   useAnimatedSprite({
     canvasRef,

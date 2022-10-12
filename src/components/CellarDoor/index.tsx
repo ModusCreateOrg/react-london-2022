@@ -1,5 +1,6 @@
-import { useRef, FC } from "react";
-import { TILE_SETS } from "../../constants";
+import { useRef, FC, useContext, useState, useEffect } from "react";
+import { EVENTS, TILE_SETS } from "../../constants";
+import { GlobalContext } from "../../contexts";
 import { useSprite } from "../../hooks";
 import "./style.css";
 
@@ -7,15 +8,21 @@ const WIDTH = 64;
 const HEIGHT = 64;
 const TILE_X = 992;
 
-type CellarDoorProps = { top: number; left: number; isOpen?: boolean };
+type CellarDoorProps = { top: number; left: number };
 
-/*
- * TODO:
- * - util function for tile set, tiles and animation
- * - track state internally
- */
-const CellarDoor: FC<CellarDoorProps> = ({ isOpen = false, top, left }) => {
+const CellarDoor: FC<CellarDoorProps> = ({ top, left }) => {
+  const { setEvent } = useContext(GlobalContext);
+  const [isOpen, setIsOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    setEvent(EVENTS.LEVER_ON, () => {
+      setIsOpen(true);
+    });
+    setEvent(EVENTS.LEVER_OFF, () => {
+      setIsOpen(false);
+    });
+  }, [setEvent]);
 
   useSprite({
     canvasRef,

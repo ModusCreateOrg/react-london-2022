@@ -1,5 +1,6 @@
 import { createContext, MutableRefObject } from "react";
-import { GAME_STATES, MAX_HEALTH } from "../constants";
+import { EVENTS, GAME_STATES, MAX_HEALTH } from "../constants";
+import { AnyFunction } from "../types";
 import { Collider, noop } from "../utils";
 
 export type GlobalContextType = {
@@ -15,6 +16,8 @@ export type GlobalContextType = {
   ) => void;
   readonly score: number;
   setScore: (value: number) => void;
+  callEvent: (event: EVENTS) => void;
+  setEvent: (event: EVENTS, cb: AnyFunction) => void;
 };
 
 export const GlobalContext = createContext<GlobalContextType>({
@@ -26,4 +29,6 @@ export const GlobalContext = createContext<GlobalContextType>({
   setColliders: noop,
   score: 0,
   setScore: noop,
+  setEvent: noop,
+  callEvent: noop,
 });
