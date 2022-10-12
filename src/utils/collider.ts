@@ -1,15 +1,17 @@
 import { Rect, noop } from "./";
+import { AnyFunction } from "../types";
 
 export enum ColliderType {
   Health,
   Bonus,
   Damage,
+  Object,
 }
 
 export class Collider {
   public readonly rect: Rect;
   public readonly type: ColliderType;
-  public readonly onCollision: () => void;
+  public readonly onCollision: AnyFunction;
   private ignoreCollisions = false;
 
   constructor(

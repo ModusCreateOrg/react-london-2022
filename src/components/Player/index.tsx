@@ -22,10 +22,9 @@ import "./style.css";
 type PlayerProps = {
   top: number;
   left: number;
-  onInteract: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
 };
 
-const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
+const Player: FC<PlayerProps> = ({ top, left }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const playerRect = useRef<Rect>(new Rect(left, top, WIDTH, HEIGHT));
   const invulnerable = useRef<boolean>(false);
@@ -43,9 +42,17 @@ const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
 
     moveTo(new Vector(left, top), canvasRef.current);
 
-    const checkCollisions = () => {
+    const checkCollisions = (isInteraction: boolean) => {
       colliders.forEach((collider) => {
         if (!collider.current.rect.overlaps(playerRect.current)) {
+          return;
+        }
+
+        if (isInteraction) {
+          if (collider.current.is(ColliderType.Object)) {
+            collider.current.onCollision();
+          }
+
           return;
         }
 
@@ -92,15 +99,16 @@ const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
           return;
         }
 
-        checkCollisions();
+        const isInteraction = Input.Interact.includes(event.key);
+        checkCollisions(isInteraction);
 
         if (playerHealth <= MIN_HEALTH) {
           setGameState(GAME_STATES.GameOver);
           return;
         }
 
-        if (Input.Interact.includes(event.key)) {
-          onInteract((wasOpen) => !wasOpen);
+        if (isInteraction) {
+          return;
         }
 
         direction.current = getInputVector(event.key);
@@ -118,15 +126,7 @@ const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
         }
       };
     };
-  }, [
-    onInteract,
-    setPlayerHealth,
-    playerHealth,
-    setGameState,
-    top,
-    left,
-    colliders,
-  ]);
+  }, [setPlayerHealth, playerHealth, setGameState, top, left, colliders]);
 
   return (
     <>

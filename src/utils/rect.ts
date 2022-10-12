@@ -6,11 +6,18 @@ export class Rect {
   public width: number;
   public height: number;
 
-  constructor(x: number, y: number, width: number, height: number) {
-    this.x1 = x;
-    this.y1 = y;
-    this.x2 = x + width;
-    this.y2 = y + height;
+  constructor(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    scaleX = 0,
+    scaleY = 0
+  ) {
+    this.x1 = x - scaleX;
+    this.y1 = y - scaleY;
+    this.x2 = x + width + scaleX;
+    this.y2 = y + height + scaleY;
     this.width = width;
     this.height = height;
   }
@@ -33,5 +40,12 @@ export class Rect {
     this.y1 = y;
     this.x2 = this.x1 + this.width;
     this.y2 = this.y1 + this.height;
+  }
+
+  public scale(scaleX: number, scaleY: number) {
+    this.x1 -= scaleX;
+    this.y1 -= scaleY;
+    this.x2 = this.x1 + this.width + scaleX;
+    this.y2 = this.y1 + this.height + scaleY;
   }
 }

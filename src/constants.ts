@@ -10,6 +10,11 @@ export enum TILE_SETS {
   World = "assets/overworld.png",
 }
 
+export enum EVENTS {
+  LEVER_ON = "LEVER_ON",
+  LEVER_OFF = "LEVER_OFF",
+}
+
 export const TILE_SIZE = 32;
 export const WORLD_WIDTH = 2048;
 export const WORLD_HEIGHT = 1536;
