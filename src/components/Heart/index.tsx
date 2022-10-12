@@ -1,25 +1,48 @@
-import { useRef, FC } from "react";
+import { useRef, FC, useState } from "react";
 import { TILE_SIZE, TILE_SETS } from "../../constants";
-import { useAnimatedSprite } from "../../hooks";
+import { useAnimatedSprite, useColliders } from "../../hooks";
+import {
+  Collider,
+  ColliderType,
+  getRandomPosition,
+  Rect,
+  Vector,
+} from "../../utils";
 import "./style.css";
 
 const WIDTH = TILE_SIZE;
 const HEIGHT = TILE_SIZE;
+const TILE_X = 0;
+const TILE_Y = 96;
 
 type HeartProps = { left: number; top: number };
 
 const Heart: FC<HeartProps> = ({ left, top }) => {
+  const [position, setPosition] = useState<Vector>(new Vector(left, top));
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const updatePosition = (c: Collider) => {
+    const newPosition = getRandomPosition(WIDTH, HEIGHT);
+    setPosition(newPosition);
+    c.rect.moveTo(newPosition.x, newPosition.y);
+  };
+  const collider = new Collider(
+    new Rect(position.x, position.y, WIDTH, HEIGHT),
+    ColliderType.Health,
+    updatePosition
+  );
+  const colliderRef = useRef<Collider>(collider);
+
+  useColliders(colliderRef);
 
   useAnimatedSprite({
     canvasRef,
-    left,
-    top,
+    left: position.x,
+    top: position.y,
     tileSet: TILE_SETS.Objects,
     width: WIDTH,
     height: HEIGHT,
-    tileX: 0,
-    tileY: 96,
+    tileX: TILE_X,
+    tileY: TILE_Y,
     animationLength: 3,
     animationSpeed: 75,
   });

@@ -4,6 +4,7 @@ export const TILE_X = 0;
 export const TILE_Y = 8;
 export const ANIMATION_LENGTH = 3;
 export const SPEED = 4;
+export const KNOCKBACK = SPEED * 12;
 
 export const Input = {
   Interact: [" ", "Enter"],

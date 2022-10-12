@@ -1,41 +1,35 @@
 import { useEffect, useRef, FC, useContext } from "react";
-import { GAME_STATES, TILE_SETS } from "../../constants";
+import {
+  GAME_STATES,
+  MAX_HEALTH,
+  MIN_HEALTH,
+  TILE_SETS,
+} from "../../constants";
 import { GlobalContext } from "../../contexts";
-import { Vector } from "../../utils";
+import { ColliderType, Rect, Vector } from "../../utils";
 import { ANIMATION_LENGTH, HEIGHT, Input, WIDTH } from "./constants";
-import { drawFrame, getInputVector, move } from "./utils";
+import { drawFrame, getInputVector, walk, knockback } from "./utils";
 import "./style.css";
 
 type PlayerProps = {
   top: number;
   left: number;
   onInteract: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
-  onCollision: (health: number | ((prev: number) => number)) => void;
 };
 
 /*
  * TODO:
- * - move object specific interactions outside of Player
  * - move player controls to global context
  * - use input loop to remove keydown delay
- * - create util function for collisions
  */
 let invulnerable = false;
-const Player: FC<PlayerProps> = ({ onInteract, onCollision, top, left }) => {
+const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { setGameState, playerHealth } = useContext(GlobalContext);
+  const playerRect = useRef<Rect>(new Rect(left, top, WIDTH, HEIGHT));
+  const { setGameState, playerHealth, setPlayerHealth, colliders } =
+    useContext(GlobalContext);
 
   useEffect(() => {
-    const fireCanvas = document.getElementById(
-      "fire-canvas"
-    ) as HTMLCanvasElement | null;
-    const heartCanvas = document.getElementById(
-      "heart-canvas"
-    ) as HTMLCanvasElement | null;
-    const coinCanvas = document.getElementById(
-      "coin-canvas"
-    ) as HTMLCanvasElement | null;
-
     const ctx = canvasRef.current?.getContext("2d");
     if (!canvasRef.current || !ctx) {
       return;
@@ -64,82 +58,32 @@ const Player: FC<PlayerProps> = ({ onInteract, onCollision, top, left }) => {
           return;
         }
 
-        if (playerHealth > 0) {
-          if (playerHealth < 4) {
-            if (
-              heartCanvas &&
-              parseInt(canvasRef.current.style.left || "0") + 6 <=
-                parseInt(heartCanvas.style.left || "0") + 16 &&
-              parseInt(canvasRef.current.style.left || "0") + 36 >=
-                parseInt(heartCanvas.style.left || "0") &&
-              parseInt(canvasRef.current.style.top || "0") + 36 <=
-                parseInt(heartCanvas.style.top || "0") + 32 &&
-              parseInt(canvasRef.current.style.top || "0") + 36 >=
-                parseInt(heartCanvas.style.top || "0") + 16
-            ) {
-              onCollision((playerHealth) => Math.min(4, playerHealth + 1));
-              heartCanvas.remove();
-            }
+        colliders.forEach((collider) => {
+          if (!collider.current.rect.overlaps(playerRect.current)) {
+            return;
           }
 
           if (
-            coinCanvas &&
-            parseInt(canvasRef.current.style.left || "0") + 6 <=
-              parseInt(coinCanvas.style.left || "0") + 16 &&
-            parseInt(canvasRef.current.style.left || "0") + 36 >=
-              parseInt(coinCanvas.style.left || "0") &&
-            parseInt(canvasRef.current.style.top || "0") + 36 <=
-              parseInt(coinCanvas.style.top || "0") + 32 &&
-            parseInt(canvasRef.current.style.top || "0") + 36 >=
-              parseInt(coinCanvas.style.top || "0") + 16
+            collider.current.type === ColliderType.Health &&
+            playerHealth < MAX_HEALTH
           ) {
-            coinCanvas.remove();
-          }
-
-          if (Input.Interact.includes(event.key)) {
-            onInteract((wasOpen) => !wasOpen);
-          }
-
-          direction = getInputVector(event.key);
-          move(direction, canvasRef.current);
-
-          if (
-            fireCanvas &&
-            !invulnerable &&
-            parseInt(canvasRef.current.style.left || "0") + 6 <=
-              parseInt(fireCanvas.style.left || "0") + 16 &&
-            parseInt(canvasRef.current.style.left || "0") + 36 >=
-              parseInt(fireCanvas.style.left || "0") &&
-            parseInt(canvasRef.current.style.top || "0") + 36 <=
-              parseInt(fireCanvas.style.top || "0") + 32 &&
-            parseInt(canvasRef.current.style.top || "0") + 36 >=
-              parseInt(fireCanvas.style.top || "0") + 16
+            collider.current.onCollision();
+            setPlayerHealth(Math.min(MAX_HEALTH, playerHealth + 1));
+          } else if (collider.current.type === ColliderType.Bonus) {
+            collider.current.onCollision();
+            // TODO
+          } else if (
+            collider.current.type === ColliderType.Damage &&
+            !invulnerable
           ) {
-            if (event.key === "w" || event.key === "ArrowUp") {
-              canvasRef.current.style.top = `${Math.min(
-                window.innerHeight,
-                parseInt(canvasRef.current.style.top || "0") + 48
-              )}px`;
-            } else if (event.key === "s" || event.key === "ArrowDown") {
-              canvasRef.current.style.top = `${Math.max(
-                0,
-                parseInt(canvasRef.current.style.top || "0") - 48
-              )}px`;
-            } else if (event.key === "a" || event.key === "ArrowLeft") {
-              canvasRef.current.style.left = `${Math.min(
-                window.innerWidth,
-                parseInt(canvasRef.current.style.left || "0") + 48
-              )}px`;
-            } else if (event.key === "d" || event.key === "ArrowRight") {
-              canvasRef.current.style.left = `${Math.max(
-                0,
-                parseInt(canvasRef.current.style.left || "0") - 48
-              )}px`;
-            }
+            collider.current.onCollision();
 
-            onCollision((playerHealth) => Math.max(0, playerHealth - 1));
+            const velocity = knockback(direction, canvasRef.current!);
+            playerRect.current.moveBy(velocity.x, velocity.y);
+
+            setPlayerHealth(Math.max(MIN_HEALTH, playerHealth - 1));
             invulnerable = true;
-            canvasRef.current.style.filter = "brightness(6)";
+            canvasRef.current!.style.filter = "brightness(6)";
 
             const interval = setInterval(() => {
               if (!canvasRef.current) {
@@ -161,23 +105,42 @@ const Player: FC<PlayerProps> = ({ onInteract, onCollision, top, left }) => {
               invulnerable = false;
             }, 1500);
           }
+        });
 
-          if (!keyPressed) {
-            keyPressed = true;
-            drawFrame(ctx, tileSet, direction, currentFrame);
-
-            setTimeout(() => {
-              keyPressed = false;
-              currentFrame =
-                currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
-            }, 125);
-          }
-        } else {
+        if (playerHealth <= MIN_HEALTH) {
           setGameState(GAME_STATES.GameOver);
+          return;
+        }
+
+        if (Input.Interact.includes(event.key)) {
+          onInteract((wasOpen) => !wasOpen);
+        }
+
+        direction = getInputVector(event.key);
+        const velocity = walk(direction, canvasRef.current);
+        playerRect.current.moveBy(velocity.x, velocity.y);
+
+        if (!keyPressed) {
+          keyPressed = true;
+          drawFrame(ctx, tileSet, direction, currentFrame);
+
+          setTimeout(() => {
+            keyPressed = false;
+            currentFrame =
+              currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
+          }, 125);
         }
       };
     };
-  }, [onInteract, onCollision, playerHealth, setGameState, top, left]);
+  }, [
+    onInteract,
+    setPlayerHealth,
+    playerHealth,
+    setGameState,
+    top,
+    left,
+    colliders,
+  ]);
 
   return (
     <>

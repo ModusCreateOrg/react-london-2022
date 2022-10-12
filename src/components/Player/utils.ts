@@ -1,6 +1,14 @@
 import { Vector } from "../../utils";
 import { TILE_SIZE } from "../../constants";
-import { Input, WIDTH, HEIGHT, TILE_X, TILE_Y, SPEED } from "./constants";
+import {
+  Input,
+  WIDTH,
+  HEIGHT,
+  TILE_X,
+  TILE_Y,
+  SPEED,
+  KNOCKBACK,
+} from "./constants";
 
 export const getSpritePos = (direction: Vector, currentFrame: number) => {
   let yMultiplier = 0;
@@ -45,11 +53,26 @@ export const getInputVector = (key: string) => {
   return Vector.Zero;
 };
 
-export const move = (direction: Vector, canvas: HTMLCanvasElement) => {
+const move = (velocity: Vector, canvas: HTMLCanvasElement) => {
+  canvas.style.top = `${parseInt(canvas.style.top || "0") + velocity.y}px`;
+  canvas.style.left = `${parseInt(canvas.style.left || "0") + velocity.x}px`;
+};
+
+export const walk = (direction: Vector, canvas: HTMLCanvasElement) => {
   if (direction.eq(Vector.Zero)) {
-    return;
+    return Vector.Zero;
   }
+
   const velocity = direction.mul(SPEED);
-  canvas.style.top = `${parseInt(canvas.style.top || "0") - velocity.x}px`;
-  canvas.style.left = `${parseInt(canvas.style.left || "0") + velocity.y}px`;
+  move(velocity, canvas);
+
+  return velocity;
+};
+
+export const knockback = (direction: Vector, canvas: HTMLCanvasElement) => {
+  const velocity = direction.mul(-KNOCKBACK);
+  canvas.style.top = `${parseInt(canvas.style.top || "0") + velocity.y}px`;
+  canvas.style.left = `${parseInt(canvas.style.left || "0") + velocity.x}px`;
+
+  return velocity;
 };
