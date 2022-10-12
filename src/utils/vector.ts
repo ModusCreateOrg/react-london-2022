@@ -20,18 +20,18 @@ export class Vector {
   }
 
   public static get Up() {
-    return new Vector(1, 0);
-  }
-
-  public static get Down() {
-    return new Vector(-1, 0);
-  }
-
-  public static get Left() {
     return new Vector(0, -1);
   }
 
-  public static get Right() {
+  public static get Down() {
     return new Vector(0, 1);
+  }
+
+  public static get Left() {
+    return new Vector(-1, 0);
+  }
+
+  public static get Right() {
+    return new Vector(1, 0);
   }
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MutableRefObject, useState } from "react";
 import { GlobalContext } from "../../contexts";
 import World from "../World";
 import Player from "../Player";
@@ -12,6 +12,7 @@ import House from "../House";
 import Fire from "../Fire";
 import GameOver from "../GameOver";
 import { GAME_STATES, MAX_HEALTH } from "../../constants";
+import { Collider } from "../../utils";
 import "./style.css";
 
 /*
@@ -21,6 +22,7 @@ import "./style.css";
  */
 export default function App() {
   const [gameState, setGameState] = useState<GAME_STATES>(GAME_STATES.Game);
+  const [colliders, setColliders] = useState<MutableRefObject<Collider>[]>([]);
   const [isCellarDoorOpen, setIsCellarDoorOpen] = useState(false);
   const [isLeverUsed, setIsLeverUsed] = useState(false);
   const [playerHealth, setPlayerHealth] = useState(MAX_HEALTH);
@@ -28,17 +30,19 @@ export default function App() {
   return (
     <div className="App">
       <GlobalContext.Provider
-        value={{ gameState: gameState, setGameState, playerHealth }}
+        value={{
+          gameState,
+          setGameState,
+          playerHealth,
+          setPlayerHealth,
+          colliders,
+          setColliders,
+        }}
       >
         {gameState === GAME_STATES.GameOver && <GameOver />}
         <World />
         <PlayerHealth />
-        <Player
-          top={328}
-          left={420}
-          onInteract={setIsLeverUsed}
-          onCollision={setPlayerHealth}
-        />
+        <Player top={328} left={420} onInteract={setIsLeverUsed} />
         <Npc left={1608} top={224} />
         <CellarDoor isOpen={isCellarDoorOpen} left={528} top={272} />
         <Lever
