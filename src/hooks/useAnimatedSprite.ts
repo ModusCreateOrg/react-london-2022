@@ -6,45 +6,66 @@ type AnimatedSpriteProps = SpriteProps & {
   animationSpeed: number;
 };
 
-export const useAnimatedSprite = (props: AnimatedSpriteProps) => {
+export const useAnimatedSprite = ({
+  canvasRef,
+  tileSet,
+  animationSpeed,
+  animationLength,
+  width,
+  height,
+  tileX,
+  tileY,
+  left,
+  top,
+}: AnimatedSpriteProps) => {
   useEffect(() => {
-    const ctx = props.canvasRef.current?.getContext("2d");
+    const ctx = canvasRef.current?.getContext("2d");
     let intervalId: number;
 
-    if (!props.canvasRef.current || !ctx) {
+    if (!canvasRef.current || !ctx) {
       return;
     }
 
-    props.left && (props.canvasRef.current.style.left = `${props.left}px`);
-    props.top && (props.canvasRef.current.style.top = `${props.top}px`);
+    left && (canvasRef.current.style.left = `${left}px`);
+    top && (canvasRef.current.style.top = `${top}px`);
 
     const sprite = new Image();
-    sprite.src = props.tileSet;
+    sprite.src = tileSet;
     sprite.onload = () => {
       let currentFrame = 0;
 
       intervalId = window.setInterval(() => {
-        ctx.clearRect(0, 0, props.width, props.height);
+        ctx.clearRect(0, 0, width, height);
 
         ctx.drawImage(
           sprite,
-          props.tileX + props.width * currentFrame,
-          props.tileY,
-          props.width,
-          props.height,
+          tileX + width * currentFrame,
+          tileY,
+          width,
+          height,
           0,
           0,
-          props.width,
-          props.height
+          width,
+          height
         );
 
-        currentFrame =
-          currentFrame === props.animationLength ? 0 : currentFrame + 1;
-      }, props.animationSpeed);
+        currentFrame = currentFrame === animationLength ? 0 : currentFrame + 1;
+      }, animationSpeed);
     };
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [props]);
+  }, [
+    canvasRef,
+    tileSet,
+    animationSpeed,
+    animationLength,
+    width,
+    height,
+    tileX,
+    tileY,
+    left,
+    top,
+  ]);
 };

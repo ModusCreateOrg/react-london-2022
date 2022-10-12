@@ -3,3 +3,4 @@ export * from "./rect";
 export * from "./collider";
 export * from "./noop";
 export * from "./getRandomPosition";
+export * from "./clampValue";

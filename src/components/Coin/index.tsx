@@ -1,5 +1,6 @@
-import { useRef, FC } from "react";
+import { useRef, FC, useContext, useState } from "react";
 import { TILE_SIZE, TILE_SETS } from "../../constants";
+import { GlobalContext } from "../../contexts";
 import { useAnimatedSprite, useColliders } from "../../hooks";
 import { Collider, ColliderType, Rect } from "../../utils";
 import "./style.css";
@@ -8,13 +9,31 @@ const WIDTH = TILE_SIZE;
 const HEIGHT = TILE_SIZE;
 const TILE_X = 0;
 const TILE_Y = 128;
+const POINTS = 10;
+const TIMEOUT = 2000;
 
 type CoinProps = { left: number; top: number };
 
 const Coin: FC<CoinProps> = ({ left, top }) => {
+  const { setScore } = useContext(GlobalContext);
+  const [isHidden, setIsHidden] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const onCollision = (c: Collider) => {
+    setScore(POINTS);
+    setIsHidden(true);
+    collider.current.hide();
+
+    setTimeout(() => {
+      collider.current.show();
+      setIsHidden(false);
+    }, TIMEOUT);
+  };
   const collider = useRef<Collider>(
-    new Collider(new Rect(left, top, WIDTH, HEIGHT), ColliderType.Bonus)
+    new Collider(
+      new Rect(left, top, WIDTH, HEIGHT),
+      ColliderType.Bonus,
+      onCollision
+    )
   );
 
   useColliders(collider);
@@ -34,6 +53,7 @@ const Coin: FC<CoinProps> = ({ left, top }) => {
 
   return (
     <canvas
+      className={isHidden ? "hidden" : ""}
       ref={canvasRef}
       id="coin-canvas"
       width={WIDTH}

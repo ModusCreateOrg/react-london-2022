@@ -1,5 +1,4 @@
 #health-canvas {
-  z-index: 99;
-  top: calc((1536px - 100vh) / 2 + 32px);
-  left: calc((2048px - 100vw) / 2 + 8px);
+  top: 8px;
+  left: 8px;
 }

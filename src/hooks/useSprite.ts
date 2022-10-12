@@ -12,33 +12,32 @@ export type SpriteProps = {
   top?: number;
 };
 
-export const useSprite = (props: SpriteProps) => {
+export const useSprite = ({
+  canvasRef,
+  tileSet,
+  width,
+  height,
+  tileX,
+  tileY,
+  left,
+  top,
+}: SpriteProps) => {
   useEffect(() => {
-    const ctx = props.canvasRef.current?.getContext("2d");
+    const ctx = canvasRef.current?.getContext("2d");
 
-    if (!props.canvasRef.current || !ctx) {
+    if (!canvasRef.current || !ctx) {
       return;
     }
 
-    props.left && (props.canvasRef.current.style.left = `${props.left}px`);
-    props.top && (props.canvasRef.current.style.top = `${props.top}px`);
+    left && (canvasRef.current.style.left = `${left}px`);
+    top && (canvasRef.current.style.top = `${top}px`);
 
     const sprite = new Image();
-    sprite.src = props.tileSet;
+    sprite.src = tileSet;
     sprite.onload = () => {
-      ctx.clearRect(0, 0, props.width, props.height);
+      ctx.clearRect(0, 0, width, height);
 
-      ctx.drawImage(
-        sprite,
-        props.tileX,
-        props.tileY,
-        props.width,
-        props.height,
-        0,
-        0,
-        props.width,
-        props.height
-      );
+      ctx.drawImage(sprite, tileX, tileY, width, height, 0, 0, width, height);
     };
-  }, [props]);
+  }, [canvasRef, tileSet, width, height, tileX, tileY, left, top]);
 };
