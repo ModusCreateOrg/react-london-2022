@@ -13,6 +13,8 @@ export type GlobalContextType = {
       prevValue: MutableRefObject<Collider>[]
     ) => MutableRefObject<Collider>[]
   ) => void;
+  readonly score: number;
+  setScore: (value: number) => void;
 };
 
 export const GlobalContext = createContext<GlobalContextType>({
@@ -22,4 +24,6 @@ export const GlobalContext = createContext<GlobalContextType>({
   setPlayerHealth: noop,
   colliders: [],
   setColliders: noop,
+  score: 0,
+  setScore: noop,
 });

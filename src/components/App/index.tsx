@@ -2,7 +2,7 @@ import { MutableRefObject, useState } from "react";
 import { GlobalContext } from "../../contexts";
 import World from "../World";
 import Player from "../Player";
-import PlayerHealth from "../PlayerHealth";
+import Ui from "../Ui";
 import Npc from "../Npc";
 import Heart from "../Heart";
 import Coin from "../Coin";
@@ -11,9 +11,10 @@ import Lever from "../Lever";
 import House from "../House";
 import Fire from "../Fire";
 import GameOver from "../GameOver";
-import { GAME_STATES, MAX_HEALTH } from "../../constants";
+import { GAME_STATES, MAX_HEALTH, MIN_HEALTH } from "../../constants";
 import { Collider } from "../../utils";
 import "./style.css";
+import { clampValue } from "../../utils/clampValue";
 
 /*
  * TODO:
@@ -26,6 +27,7 @@ export default function App() {
   const [isCellarDoorOpen, setIsCellarDoorOpen] = useState(false);
   const [isLeverUsed, setIsLeverUsed] = useState(false);
   const [playerHealth, setPlayerHealth] = useState(MAX_HEALTH);
+  const [score, setScore] = useState(0);
 
   return (
     <div className="App">
@@ -34,15 +36,18 @@ export default function App() {
           gameState,
           setGameState,
           playerHealth,
-          setPlayerHealth,
+          setPlayerHealth: (health: number) =>
+            setPlayerHealth(clampValue(health, MIN_HEALTH, MAX_HEALTH)),
           colliders,
           setColliders,
+          score,
+          setScore: (value: number) => setScore((oldScore) => oldScore + value),
         }}
       >
         {gameState === GAME_STATES.GameOver && <GameOver />}
         <World />
-        <PlayerHealth />
-        <Player top={328} left={420} onInteract={setIsLeverUsed} />
+        <Ui />
+        <Player top={332} left={428} onInteract={setIsLeverUsed} />
         <Npc left={1608} top={224} />
         <CellarDoor isOpen={isCellarDoorOpen} left={528} top={272} />
         <Lever

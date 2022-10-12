@@ -7,8 +7,16 @@ import {
 } from "../../constants";
 import { GlobalContext } from "../../contexts";
 import { ColliderType, Rect, Vector } from "../../utils";
-import { ANIMATION_LENGTH, HEIGHT, Input, WIDTH } from "./constants";
-import { drawFrame, getInputVector, walk, knockback } from "./utils";
+import { HEIGHT, Input, WIDTH } from "./constants";
+import {
+  drawFrame,
+  getInputVector,
+  walk,
+  knockback,
+  blink,
+  getNextFrame,
+  moveTo,
+} from "./utils";
 import "./style.css";
 
 type PlayerProps = {
@@ -17,15 +25,13 @@ type PlayerProps = {
   onInteract: (isOpen: boolean | ((wasOpen: boolean) => boolean)) => void;
 };
 
-/*
- * TODO:
- * - move player controls to global context
- * - use input loop to remove keydown delay
- */
-let invulnerable = false;
 const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const playerRect = useRef<Rect>(new Rect(left, top, WIDTH, HEIGHT));
+  const invulnerable = useRef<boolean>(false);
+  const keyPressed = useRef<boolean>(false);
+  const direction = useRef<Vector>(Vector.Down);
+  const currentFrame = useRef<number>(0);
   const { setGameState, playerHealth, setPlayerHealth, colliders } =
     useContext(GlobalContext);
 
@@ -35,22 +41,50 @@ const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
       return;
     }
 
-    canvasRef.current.style.top = canvasRef.current.style.top || `${top}px`;
-    canvasRef.current.style.left = canvasRef.current.style.left || `${left}px`;
+    moveTo(new Vector(left, top), canvasRef.current);
+
+    const checkCollisions = () => {
+      colliders.forEach((collider) => {
+        if (!collider.current.rect.overlaps(playerRect.current)) {
+          return;
+        }
+
+        if (
+          collider.current.is(ColliderType.Health) &&
+          playerHealth < MAX_HEALTH
+        ) {
+          collider.current.onCollision();
+          setPlayerHealth(playerHealth + 1);
+          return;
+        }
+
+        if (collider.current.is(ColliderType.Bonus)) {
+          collider.current.onCollision();
+          return;
+        }
+
+        if (collider.current.is(ColliderType.Damage) && !invulnerable.current) {
+          collider.current.onCollision();
+
+          const velocity = knockback(direction.current, canvasRef.current!);
+          playerRect.current.moveBy(velocity.x, velocity.y);
+
+          setPlayerHealth(playerHealth - 1);
+          invulnerable.current = true;
+          blink(canvasRef.current!, () => (invulnerable.current = false));
+        }
+      });
+    };
 
     const tileSet = new Image();
     tileSet.src = TILE_SETS.Player;
     tileSet.onload = () => {
-      let keyPressed = false;
-      let direction = Vector.Down;
-      let currentFrame = 0;
-
-      drawFrame(ctx, tileSet, direction, currentFrame);
+      drawFrame(ctx, tileSet, direction.current, currentFrame.current);
 
       window.onkeyup = () => {
-        currentFrame = 0;
-        keyPressed = false;
-        drawFrame(ctx, tileSet, direction, currentFrame);
+        currentFrame.current = 0;
+        keyPressed.current = false;
+        drawFrame(ctx, tileSet, direction.current, currentFrame.current);
       };
 
       window.onkeydown = (event) => {
@@ -58,54 +92,7 @@ const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
           return;
         }
 
-        colliders.forEach((collider) => {
-          if (!collider.current.rect.overlaps(playerRect.current)) {
-            return;
-          }
-
-          if (
-            collider.current.type === ColliderType.Health &&
-            playerHealth < MAX_HEALTH
-          ) {
-            collider.current.onCollision();
-            setPlayerHealth(Math.min(MAX_HEALTH, playerHealth + 1));
-          } else if (collider.current.type === ColliderType.Bonus) {
-            collider.current.onCollision();
-            // TODO
-          } else if (
-            collider.current.type === ColliderType.Damage &&
-            !invulnerable
-          ) {
-            collider.current.onCollision();
-
-            const velocity = knockback(direction, canvasRef.current!);
-            playerRect.current.moveBy(velocity.x, velocity.y);
-
-            setPlayerHealth(Math.max(MIN_HEALTH, playerHealth - 1));
-            invulnerable = true;
-            canvasRef.current!.style.filter = "brightness(6)";
-
-            const interval = setInterval(() => {
-              if (!canvasRef.current) {
-                return;
-              }
-
-              canvasRef.current.style.filter =
-                canvasRef.current.style.filter.includes("1")
-                  ? "brightness(6)"
-                  : "brightness(1)";
-            }, 100);
-
-            setTimeout(() => {
-              clearInterval(interval);
-              if (!canvasRef.current) {
-                return;
-              }
-              canvasRef.current.style.filter = "brightness(1)";
-              invulnerable = false;
-            }, 1500);
-          }
-        });
+        checkCollisions();
 
         if (playerHealth <= MIN_HEALTH) {
           setGameState(GAME_STATES.GameOver);
@@ -116,18 +103,17 @@ const Player: FC<PlayerProps> = ({ onInteract, top, left }) => {
           onInteract((wasOpen) => !wasOpen);
         }
 
-        direction = getInputVector(event.key);
-        const velocity = walk(direction, canvasRef.current);
+        direction.current = getInputVector(event.key);
+        const velocity = walk(direction.current, canvasRef.current);
         playerRect.current.moveBy(velocity.x, velocity.y);
 
-        if (!keyPressed) {
-          keyPressed = true;
-          drawFrame(ctx, tileSet, direction, currentFrame);
+        if (!keyPressed.current) {
+          keyPressed.current = true;
+          drawFrame(ctx, tileSet, direction.current, currentFrame.current);
 
           setTimeout(() => {
-            keyPressed = false;
-            currentFrame =
-              currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
+            keyPressed.current = false;
+            currentFrame.current = getNextFrame(currentFrame.current);
           }, 125);
         }
       };

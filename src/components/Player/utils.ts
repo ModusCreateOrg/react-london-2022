@@ -8,6 +8,7 @@ import {
   TILE_Y,
   SPEED,
   KNOCKBACK,
+  ANIMATION_LENGTH,
 } from "./constants";
 
 export const getSpritePos = (direction: Vector, currentFrame: number) => {
@@ -58,6 +59,11 @@ const move = (velocity: Vector, canvas: HTMLCanvasElement) => {
   canvas.style.left = `${parseInt(canvas.style.left || "0") + velocity.x}px`;
 };
 
+export const moveTo = ({ x, y }: Vector, canvas: HTMLCanvasElement) => {
+  canvas.style.left = canvas.style.left || `${x}px`;
+  canvas.style.top = canvas.style.top || `${y}px`;
+};
+
 export const walk = (direction: Vector, canvas: HTMLCanvasElement) => {
   if (direction.eq(Vector.Zero)) {
     return Vector.Zero;
@@ -75,4 +81,24 @@ export const knockback = (direction: Vector, canvas: HTMLCanvasElement) => {
   canvas.style.left = `${parseInt(canvas.style.left || "0") + velocity.x}px`;
 
   return velocity;
+};
+
+export const blink = (canvas: HTMLCanvasElement, cb: () => void) => {
+  canvas.style.filter = "brightness(6)";
+
+  const interval = setInterval(() => {
+    canvas.style.filter = canvas.style.filter.includes("1")
+      ? "brightness(6)"
+      : "brightness(1)";
+  }, 100);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    canvas.style.filter = "brightness(1)";
+    cb();
+  }, 1500);
+};
+
+export const getNextFrame = (currentFrame: number) => {
+  return currentFrame === ANIMATION_LENGTH ? 0 : currentFrame + 1;
 };
